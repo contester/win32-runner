@@ -7,6 +7,22 @@
 #include <boost/asio.hpp>
 
 
+class SubprocessWrapper {
+ private:
+  ::contester::proto::LocalExecutionParameters params_;
+
+ public:
+  explicit SubprocessWrapper(::contester::proto::LocalExecutionParameters params) :
+    params_(params) {};
+
+  bool Init();
+};
+
+bool SubprocessWrapper::Init() {
+  return true;
+};
+
+
 using boost::asio::ip::tcp;
 
 int main(int argc, char **argv) {
