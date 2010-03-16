@@ -42,6 +42,21 @@ int main(int argc, char **argv) {
         params.ParseFromString(msg.request().message());
 
         params.PrintDebugString();
+
+        ::contester::proto::LocalExecutionResult result;
+
+        result.set_return_code(100);
+
+        ProtocolMessage reply;
+        reply.set_sequence_number(msg.sequence_number());
+        reply.mutable_response()->set_message(result.SerializeAsString());
+
+        std::string reply_str = reply.SerializeAsString();
+
+        proto_length = htonl(reply_str.size());
+
+        read_b = boost::asio::write(socket, boost::asio::buffer(&proto_length, sizeof(proto_length)));
+        read_b = boost::asio::write(socket, boost::asio::buffer(reply_str));
       }
 
       free(msgbuf);
