@@ -41,7 +41,7 @@ message LocalExecutionParameters {
   optional RedirectParameters stdin = 12;
   optional RedirectParameters stdout = 13;
   optional RedirectParameters stderr = 14;
-}
+};
 
 message LocalExecutionResult {
   optional ExecutionResultFlags flags = 1;

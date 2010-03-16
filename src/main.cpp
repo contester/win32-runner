@@ -6,22 +6,43 @@
 #include <string>
 #include <boost/asio.hpp>
 
+#include "w32invoke.h"
 
 class SubprocessWrapper {
  private:
-  ::contester::proto::LocalExecutionParameters params_;
+  struct Subprocess * sub_;
 
  public:
-  explicit SubprocessWrapper(::contester::proto::LocalExecutionParameters params) :
-    params_(params) {};
-
-  bool Init();
+  explicit SubprocessWrapper(::contester::proto::LocalExecutionParameters params);
+  virtual ~SubprocessWrapper();
 };
 
-bool SubprocessWrapper::Init() {
-  return true;
+static bool Subprocess_SetProtoString(struct Subprocess * const sub, enum SUBPROCESS_PARAM param, const std::string& str) {
+  return Subprocess_SetBufferUTF8(sub, param, str.c_str(), str.size());
 };
 
+
+SubprocessWrapper::SubprocessWrapper(::contester::proto::LocalExecutionParameters params) {
+  sub_ = Subprocess_Create();
+  Subprocess_SetProtoString(sub_, RUNLIB_APPLICATION_NAME, params.application_name());
+  Subprocess_SetProtoString(sub_, RUNLIB_COMMAND_LINE, params.command_line());
+  Subprocess_SetProtoString(sub_, RUNLIB_CURRENT_DIRECTORY, params.current_directory());
+  
+  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT, params.time_limit() * 1000);
+  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT_HARD, params.time_limit_hard() * 1000);
+  Subprocess_SetInt(sub_, RUNLIB_MEMORY_LIMIT, params.memory_limit());
+  Subprocess_SetInt(sub_, RUNLIB_PROCESS_LIMIT, params.process_limit());
+
+  Subprocess_SetBool(sub_, RUNLIB_CHECK_IDLENESS, params.check_idleness());
+  Subprocess_SetBool(sub_, RUNLIB_RESTRICT_UI, params.restrict_ui());
+  Subprocess_SetBool(sub_, RUNLIB_NO_JOB, params.no_job());
+};
+
+SubprocessWrapper::~SubprocessWrapper() {
+  if (sub_)
+    Subprocess_Destroy(sub_);
+  sub_ = NULL;
+};
 
 using boost::asio::ip::tcp;
 
@@ -59,6 +80,8 @@ int main(int argc, char **argv) {
 
         params.PrintDebugString();
 
+        SubprocessWrapper sub(params);
+
         ::contester::proto::LocalExecutionResult result;
 
         result.set_return_code(100);
@@ -84,4 +107,4 @@ int main(int argc, char **argv) {
   }
 
   return 0;
-}
+};
