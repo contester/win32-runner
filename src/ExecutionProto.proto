@@ -1,0 +1,29 @@
+import "BlobProto.proto";
+
+package contester.proto;
+
+message RedirectParameters {
+  optional string filename = 1;
+  optional bool memory = 2;
+  optional Blob buffer = 3;
+}
+
+message ExecutionResultFlags {
+  optional bool killed = 1;
+  optional bool time_limit_hit = 2;
+  optional bool memory_limit_hit = 3;
+  optional bool inactive = 4;
+  optional bool time_limit_hard = 5;
+  optional bool stdout_overflow = 6;
+  optional bool stderr_overflow = 7;
+  optional bool stdpipe_timeout = 8;
+  optional bool time_limit_hit_post = 9;
+  optional bool memory_limit_hit_post = 10;
+  optional bool process_limit_hit = 11;
+};
+
+message ExecutionResultTime {
+  optional uint64 user_time = 1;
+  optional uint64 kernel_time = 2;
+  optional uint64 wall_time = 3;
+};

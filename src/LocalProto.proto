@@ -1,0 +1,59 @@
+import "BlobProto.proto";
+import "ExecutionProto.proto";
+
+package contester.proto;
+
+// Environment is started empty, then selected variables are copied over.
+
+message LocalEnvironment {
+  message Variable {
+    required string name = 1;
+    optional string value = 2;
+    optional bool expand = 3;
+  }
+
+  optional bool empty = 1;
+  repeated Variable variable = 2;
+};
+
+message LoginInformation {
+  required string username = 1;
+  required string password = 2;
+  optional string domain = 3;
+};
+
+message LocalExecutionParameters {
+  optional string application_name = 1;
+  optional string command_line = 2;
+  optional string current_directory = 3;
+
+  optional float time_limit = 4;
+  optional uint64 memory_limit = 5;
+  optional bool check_idleness = 6;
+  optional LocalEnvironment environment = 7;
+  optional bool restrict_ui = 8;
+  optional bool no_job = 9;
+  optional uint32 process_limit = 10;
+  optional float time_limit_hard = 15;
+
+  optional LoginInformation login_information = 11;
+
+  optional RedirectParameters stdin = 12;
+  optional RedirectParameters stdout = 13;
+  optional RedirectParameters stderr = 14;
+}
+
+message LocalExecutionResult {
+  optional ExecutionResultFlags flags = 1;
+  optional ExecutionResultTime time = 2;
+  optional uint64 memory = 3;
+  optional uint32 return_code = 4;
+  optional Blob stdout = 5;
+  optional Blob stderr = 6;
+  optional uint64 total_processes = 7;
+};
+
+message LocalExecution {
+  required LocalExecutionParameters parameters = 1;
+  optional LocalExecutionResult result = 2;
+};

@@ -1,9 +1,11 @@
+#include "rpc.pb.h"
+#include "LocalProto.pb.h"
+
 #include <ctime>
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
 
-#include "rpc.pb.h"
 
 using boost::asio::ip::tcp;
 
@@ -34,7 +36,12 @@ int main(int argc, char **argv) {
         ProtocolMessage msg;
 
         msg.ParseFromArray(msgbuf, proto_length);
-        msg.PrintDebugString();
+
+        ::contester::proto::LocalExecutionParameters params;
+
+        params.ParseFromString(msg.request().message());
+
+        params.PrintDebugString();
       }
 
       free(msgbuf);
