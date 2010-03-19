@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/scoped_array.hpp>
 
 #include "w32invoke.h"
 
@@ -46,64 +49,134 @@ SubprocessWrapper::~SubprocessWrapper() {
 
 using boost::asio::ip::tcp;
 
+class LocalSession {
+public:
+  LocalSession(boost::asio::io_service& io_service)
+    : socket_(io_service)
+  {
+  }
+
+  tcp::socket& socket()
+  {
+    return socket_;
+  }
+
+  void start()
+  {
+    boost::asio::async_read(
+        socket_,
+        boost::asio::buffer(&request_length_, sizeof(request_length_)),
+        boost::bind(&LocalSession::handle_read_length, this,
+          boost::asio::placeholders::error,
+          boost::asio::placeholders::bytes_transferred));
+  }
+
+  void handle_read_length(const boost::system::error_code& error,
+      size_t bytes_transferred)
+  {
+    if (!error &&
+        (bytes_transferred == sizeof(request_length_)) &&
+        ((request_length_ = ntohl(request_length_)) < (64 * 1024 * 1024))) {
+
+      std::cout << "Read length:" << request_length_ << ", error" << error << std::endl;
+
+      buffer_.reset(new char[request_length_]);
+
+      boost::asio::async_read(
+          socket_,
+          boost::asio::buffer(buffer_.get(), request_length_),
+          boost::bind(&LocalSession::handle_read_proto, this,
+              boost::asio::placeholders::error,
+              boost::asio::placeholders::bytes_transferred));
+    }
+    else
+    {
+      delete this;
+    }
+  }
+
+  void handle_read_proto(const boost::system::error_code& error,
+      size_t bytes_transferred)
+  {
+    received_message_.reset(new ProtocolMessage());
+    if (!error &&
+        (bytes_transferred == request_length_) &&
+        received_message_->ParseFromArray(buffer_.get(), request_length_) &&
+        handle_message()) {
+      start();
+    } else delete this;
+  }
+
+  bool handle_message() {
+    received_message_->PrintDebugString();
+    return true;
+  }
+
+private:
+  tcp::socket socket_;
+  uint32_t request_length_;
+  boost::scoped_array<char> buffer_;
+  boost::scoped_ptr<ProtocolMessage> received_message_;
+};
+
+
+class LocalServer
+{
+public:
+  LocalServer(boost::asio::io_service& io_service, short port)
+    : io_service_(io_service),
+      acceptor_(io_service, tcp::endpoint(boost::asio::ip::address_v4::loopback(), port))
+  {
+    restart_accept();
+  }
+
+  void handle_accept(LocalSession* new_session,
+      const boost::system::error_code& error)
+  {
+    if (!error)
+    {
+      std::cout << "accept" << std::endl;
+      new_session->start();
+      restart_accept();
+    }
+    else
+    {
+      delete new_session;
+    }
+  }
+
+  void restart_accept() {
+    LocalSession * const new_session = new LocalSession(io_service_);
+
+    acceptor_.async_accept(new_session->socket(),
+        boost::bind(&LocalServer::handle_accept, this, new_session,
+            boost::asio::placeholders::error));
+  }
+
+private:
+  boost::asio::io_service& io_service_;
+  tcp::acceptor acceptor_;
+};
+
+
 int main(int argc, char **argv) {
   try
   {
-    boost::asio::io_service io_service;
-    tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 9900));
-    for (;;)
+    if (argc != 2)
     {
-      tcp::socket socket(io_service);
-      acceptor.accept(socket);
-
-      boost::system::error_code ignored_error;
-      uint32_t proto_length = 0;
-
-      std::size_t read_b = boost::asio::read(socket, boost::asio::buffer(&proto_length, sizeof(proto_length)));
-      if (read_b < sizeof(proto_length))
-        continue;
-
-      proto_length = ntohl(proto_length);
-      std::cout << proto_length << std::endl;
-
-      char * msgbuf = (char*) malloc(proto_length);
-      read_b = boost::asio::read(socket, boost::asio::buffer(msgbuf, proto_length));
-
-      if (read_b == proto_length) {
-        ProtocolMessage msg;
-
-        msg.ParseFromArray(msgbuf, proto_length);
-
-        ::contester::proto::LocalExecutionParameters params;
-
-        params.ParseFromString(msg.request().message());
-
-        params.PrintDebugString();
-
-        SubprocessWrapper sub(params);
-
-        ::contester::proto::LocalExecutionResult result;
-
-        result.set_return_code(100);
-
-        ProtocolMessage reply;
-        reply.set_sequence_number(msg.sequence_number());
-        reply.mutable_response()->set_message(result.SerializeAsString());
-
-        std::string reply_str = reply.SerializeAsString();
-
-        proto_length = htonl(reply_str.size());
-
-        read_b = boost::asio::write(socket, boost::asio::buffer(&proto_length, sizeof(proto_length)));
-        read_b = boost::asio::write(socket, boost::asio::buffer(reply_str));
-      }
-
-      free(msgbuf);
+      std::cerr << "Usage: async_tcp_echo_server <port>\n";
+      return 1;
     }
+
+    boost::asio::io_service io_service;
+
+    LocalServer s(io_service, std::atoi(argv[1]));
+
+    io_service.run();
   }
   catch (std::exception& e)
   {
-    std::cerr << e.what() << std::endl;
+    std::cerr << "Exception: " << e.what() << "\n";
   }
 
   return 0;
