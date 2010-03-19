@@ -52,7 +52,7 @@ using boost::asio::ip::tcp;
 class LocalSession {
 public:
   LocalSession(boost::asio::io_service& io_service)
-    : socket_(io_service)
+    : socket_(io_service), timer_(io_service)
   {
   }
 
@@ -109,14 +109,62 @@ public:
 
   bool handle_message() {
     received_message_->PrintDebugString();
-    return true;
+
+    if (received_message_->request().method_name() == "LocalExecute")
+      return handle_local_execute();
+
+    return false;
   }
+
+  bool handle_local_execute() {
+    contester::proto::LocalExecutionParameters params;
+    if (params.ParseFromString(received_message_->request().message())) {
+      SubprocessWrapper s(params);
+      timer_.expires_from_now(boost::posix_time::seconds(3));
+      timer_.async_wait(boost::bind(&LocalSession::handle_exec_done, this, received_message_->sequence_number()));
+      return true;
+    }
+  }
+
+  void handle_exec_done(int sequence_number) {
+    contester::proto::LocalExecutionResult result;
+
+    result.set_return_code(100);
+    
+    reply_message_.reset(new ProtocolMessage());
+    reply_message_->set_sequence_number(sequence_number);
+    reply_message_->mutable_response()->set_message(result.SerializeAsString());
+
+    reply_buffer_ = reply_message_->SerializeAsString();
+    response_length_ = htonl(reply_buffer_.size());
+
+    boost::array<boost::asio::const_buffer, 2> bufs = {
+      boost::asio::buffer(&response_length_, sizeof(response_length_)),
+      boost::asio::buffer(reply_buffer_)
+    };
+    
+    boost::asio::async_write(
+        socket_,
+        bufs,
+        boost::bind(&LocalSession::handle_write_done, this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+  };
+
+  void handle_write_done(const boost::system::error_code& error,
+      size_t bytes_transferred) {
+  };
+    
 
 private:
   tcp::socket socket_;
   uint32_t request_length_;
   boost::scoped_array<char> buffer_;
   boost::scoped_ptr<ProtocolMessage> received_message_;
+  uint32_t response_length_;
+  boost::scoped_ptr<ProtocolMessage> reply_message_;
+  std::string reply_buffer_;
+  boost::asio::deadline_timer timer_;
 };
 
 
