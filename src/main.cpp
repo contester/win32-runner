@@ -11,12 +11,21 @@
 
 #include "w32invoke.h"
 
+using boost::scoped_ptr;
+using boost::scoped_array;
+using std::auto_ptr;
+using std::string;
+
+const uint32_t kMaxRequestSize = 64 * 1024 * 1024;
+
+namespace contester {
+
 class SubprocessWrapper {
  private:
   struct Subprocess * sub_;
 
  public:
-  explicit SubprocessWrapper(::contester::proto::LocalExecutionParameters params);
+  explicit SubprocessWrapper(proto::LocalExecutionParameters* params);
   virtual ~SubprocessWrapper();
 };
 
@@ -25,20 +34,20 @@ static bool Subprocess_SetProtoString(struct Subprocess * const sub, enum SUBPRO
 };
 
 
-SubprocessWrapper::SubprocessWrapper(::contester::proto::LocalExecutionParameters params) {
+SubprocessWrapper::SubprocessWrapper(proto::LocalExecutionParameters* params) {
   sub_ = Subprocess_Create();
-  Subprocess_SetProtoString(sub_, RUNLIB_APPLICATION_NAME, params.application_name());
-  Subprocess_SetProtoString(sub_, RUNLIB_COMMAND_LINE, params.command_line());
-  Subprocess_SetProtoString(sub_, RUNLIB_CURRENT_DIRECTORY, params.current_directory());
+  Subprocess_SetProtoString(sub_, RUNLIB_APPLICATION_NAME, params->application_name());
+  Subprocess_SetProtoString(sub_, RUNLIB_COMMAND_LINE, params->command_line());
+  Subprocess_SetProtoString(sub_, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
   
-  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT, params.time_limit() * 1000);
-  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT_HARD, params.time_limit_hard() * 1000);
-  Subprocess_SetInt(sub_, RUNLIB_MEMORY_LIMIT, params.memory_limit());
-  Subprocess_SetInt(sub_, RUNLIB_PROCESS_LIMIT, params.process_limit());
+  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
+  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
+  Subprocess_SetInt(sub_, RUNLIB_MEMORY_LIMIT, params->memory_limit());
+  Subprocess_SetInt(sub_, RUNLIB_PROCESS_LIMIT, params->process_limit());
 
-  Subprocess_SetBool(sub_, RUNLIB_CHECK_IDLENESS, params.check_idleness());
-  Subprocess_SetBool(sub_, RUNLIB_RESTRICT_UI, params.restrict_ui());
-  Subprocess_SetBool(sub_, RUNLIB_NO_JOB, params.no_job());
+  Subprocess_SetBool(sub_, RUNLIB_CHECK_IDLENESS, params->check_idleness());
+  Subprocess_SetBool(sub_, RUNLIB_RESTRICT_UI, params->restrict_ui());
+  Subprocess_SetBool(sub_, RUNLIB_NO_JOB, params->no_job());
 };
 
 SubprocessWrapper::~SubprocessWrapper() {
@@ -63,29 +72,38 @@ public:
 
   void start()
   {
+    uint32_t* request_size_buffer = new uint32_t;
+
     boost::asio::async_read(
         socket_,
-        boost::asio::buffer(&request_length_, sizeof(request_length_)),
-        boost::bind(&LocalSession::handle_read_length, this,
+        boost::asio::buffer(request_size_buffer, sizeof(*request_size_buffer)),
+        boost::bind(&LocalSession::handle_read_size, this,
+          request_size_buffer,
           boost::asio::placeholders::error,
           boost::asio::placeholders::bytes_transferred));
   }
 
-  void handle_read_length(const boost::system::error_code& error,
+  void handle_read_size(uint32_t* request_size_buffer,
+      const boost::system::error_code& error,
       size_t bytes_transferred)
   {
+    scoped_ptr<uint32_t> request_size_buffer_deleter(request_size_buffer);
+    const uint32_t request_size = htonl(*request_size_buffer);
+
     if (!error &&
-        (bytes_transferred == sizeof(request_length_)) &&
-        ((request_length_ = ntohl(request_length_)) < (64 * 1024 * 1024))) {
+        (bytes_transferred == sizeof(*request_size_buffer)) &&
+        (request_size < kMaxRequestSize)) {
 
-      std::cout << "Read length:" << request_length_ << ", error" << error << std::endl;
+      std::cout << "Read length:" << request_size << ", error" << error << std::endl;
 
-      buffer_.reset(new char[request_length_]);
+      char* request_buffer = new char[request_size];
 
       boost::asio::async_read(
           socket_,
-          boost::asio::buffer(buffer_.get(), request_length_),
+          boost::asio::buffer(request_buffer, request_size),
           boost::bind(&LocalSession::handle_read_proto, this,
+              request_buffer,
+              request_size,
               boost::asio::placeholders::error,
               boost::asio::placeholders::bytes_transferred));
     }
@@ -95,75 +113,92 @@ public:
     }
   }
 
-  void handle_read_proto(const boost::system::error_code& error,
+  void handle_read_proto(char* request_buffer,
+      uint32_t request_size,
+      const boost::system::error_code& error,
       size_t bytes_transferred)
   {
-    received_message_.reset(new ProtocolMessage());
+    scoped_array<char> request_buffer_deleter(request_buffer);
+    std::auto_ptr<ProtocolMessage> message(new ProtocolMessage());
+
     if (!error &&
-        (bytes_transferred == request_length_) &&
-        received_message_->ParseFromArray(buffer_.get(), request_length_) &&
-        handle_message()) {
+        (bytes_transferred == request_size) &&
+        message->ParseFromArray(request_buffer, request_size) &&
+        handle_message(message.release())) {
       start();
     } else delete this;
   }
 
-  bool handle_message() {
-    received_message_->PrintDebugString();
+  bool handle_message(ProtocolMessage* message) {
+    std::auto_ptr<ProtocolMessage> message_deleter(message);
+    message->PrintDebugString();
 
-    if (received_message_->request().method_name() == "LocalExecute")
-      return handle_local_execute();
+    if (message->request().method_name() == "LocalExecute") {
+      auto_ptr<proto::LocalExecutionParameters> params(new proto::LocalExecutionParameters());
+      if (params->ParseFromString(message->request().message()))
+        return handle_local_execute(params.release(), message->sequence_number());
+    }
 
     return false;
   }
 
-  bool handle_local_execute() {
-    contester::proto::LocalExecutionParameters params;
-    if (params.ParseFromString(received_message_->request().message())) {
-      SubprocessWrapper s(params);
-      timer_.expires_from_now(boost::posix_time::seconds(3));
-      timer_.async_wait(boost::bind(&LocalSession::handle_exec_done, this, received_message_->sequence_number()));
-      return true;
-    }
+  bool handle_local_execute(proto::LocalExecutionParameters* params_p, int sequence_number) {
+    scoped_ptr<proto::LocalExecutionParameters> params(params_p);
+
+    SubprocessWrapper s(params_p);
+    timer_.expires_from_now(boost::posix_time::seconds(3));
+    timer_.async_wait(boost::bind(&LocalSession::handle_exec_done, this, sequence_number));
+
+    return true;
   }
 
-  void handle_exec_done(int sequence_number) {
-    contester::proto::LocalExecutionResult result;
+  void send_rpc_reply(int sequence_number, google::protobuf::Message* message) {
+    ProtocolMessage reply;
 
-    result.set_return_code(100);
+    reply.set_sequence_number(sequence_number);
+    reply.mutable_response()->set_message(message->SerializeAsString());
     
-    reply_message_.reset(new ProtocolMessage());
-    reply_message_->set_sequence_number(sequence_number);
-    reply_message_->mutable_response()->set_message(result.SerializeAsString());
-
-    reply_buffer_ = reply_message_->SerializeAsString();
-    response_length_ = htonl(reply_buffer_.size());
+    string* reply_str = new string(reply.SerializeAsString());
+    uint32_t* reply_size = new uint32_t;
+    *reply_size = htonl(reply_str->size());
 
     boost::array<boost::asio::const_buffer, 2> bufs = {
-      boost::asio::buffer(&response_length_, sizeof(response_length_)),
-      boost::asio::buffer(reply_buffer_)
+      boost::asio::buffer(reply_size, sizeof(*reply_size)),
+      boost::asio::buffer(*reply_str)
     };
     
     boost::asio::async_write(
         socket_,
         bufs,
         boost::bind(&LocalSession::handle_write_done, this,
+            reply_size,
+            reply_str,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
   };
 
-  void handle_write_done(const boost::system::error_code& error,
+  void handle_exec_done(int sequence_number) {
+    proto::LocalExecutionResult result;
+    result.set_return_code(100);
+
+    send_rpc_reply(sequence_number, &result);
+  };
+
+  void handle_write_done(
+      uint32_t* reply_size,
+      string* reply_str,
+      const boost::system::error_code& error,
       size_t bytes_transferred) {
+    scoped_ptr<uint32_t> reply_size_deleter(reply_size);
+    scoped_ptr<string> reply_str_deleter(reply_str);
+
+    //if (error || (bytes_transferred < (sizeof(*reply_size) + reply_str.size())))
+    //  delete this;
   };
     
 
 private:
   tcp::socket socket_;
-  uint32_t request_length_;
-  boost::scoped_array<char> buffer_;
-  boost::scoped_ptr<ProtocolMessage> received_message_;
-  uint32_t response_length_;
-  boost::scoped_ptr<ProtocolMessage> reply_message_;
-  std::string reply_buffer_;
   boost::asio::deadline_timer timer_;
 };
 
@@ -205,7 +240,9 @@ private:
   boost::asio::io_service& io_service_;
   tcp::acceptor acceptor_;
 };
+};
 
+using contester::LocalServer;
 
 int main(int argc, char **argv) {
   try
