@@ -24,10 +24,11 @@ using boost::uuids::uuid;
 
 class SessionRpc : public Rpc {
  public:
+  scoped_ptr<ProtocolMessage> message_;
+
   explicit SessionRpc(shared_ptr<Session> session, ProtocolMessage* message);
  private:
   shared_ptr<Session> session_;
-  scoped_ptr<ProtocolMessage> message_;
 };
 
 SessionRpc::SessionRpc(shared_ptr<Session> session, ProtocolMessage* message)
@@ -71,6 +72,8 @@ Session::Session(Server* server, uuid& id, shared_ptr<tcp::socket> socket)
 
 void Session::StartRead() {
   uint32_t* request_size_buffer = new uint32_t;
+  
+  std::cout << "StartRead" << std::endl;
 
   boost::asio::async_read(
       *socket_,
@@ -95,11 +98,12 @@ void Session::HandleReadSize(
     size_t bytes_transferred) {
 
   scoped_ptr<uint32_t> request_size_buffer_deleter(request_size_buffer);
-  const uint32_t request_size = htonl(*request_size_buffer);
+  const uint32_t request_size = ntohl(*request_size_buffer);
 
   if (!error &&
       (bytes_transferred == sizeof(*request_size_buffer)) &&
       (request_size < kMaxRequestSize)) {
+	  
     char* request_buffer = new char[request_size];
 
     boost::asio::async_read(
@@ -123,11 +127,14 @@ void Session::HandleReadProto(
 
   if (!error && (bytes_transferred == request_size)) {
     auto_ptr<ProtocolMessage> message(new ProtocolMessage());
+	
     if (message->ParseFromArray(request_buffer, request_size)) {
-      requests_[message->sequence_number()] =
-	      make_shared< SessionRpc, shared_ptr<Session>, ProtocolMessage* >(server_->sessions_[id_], message.release());
-      RpcMethod method = server_->GetMethodHandler(message->request().method_name());
+	  shared_ptr<SessionRpc> sess(make_shared< SessionRpc, shared_ptr<Session>, ProtocolMessage* >(server_->sessions_[id_], message.release()));
+      RpcMethod method = server_->GetMethodHandler(sess->message_->request().method_name());
+      requests_[sess->message_->sequence_number()] = sess;
 
+      std::cout << bytes_transferred << std::endl;
+	  
       if (method)
         method(requests_[message->sequence_number()]);
     }
@@ -139,7 +146,8 @@ Server::Server(boost::asio::io_service& io_service)
 
 void Server::Listen(const tcp::endpoint& endpoint) {
   const uuid id(uuid_generator_());
-  // acceptors_.insert(id, new tcp::acceptor(io_service_, endpoint));
+  shared_ptr<tcp::acceptor> acc(new tcp::acceptor(io_service_, endpoint));
+  acceptors_.insert(std::pair< uuid, shared_ptr<tcp::acceptor> >(id, acc));
   RestartAccept(id);
 };
 
@@ -160,19 +168,21 @@ void Server::RestartAccept(const uuid& id) {
 void Server::HandleAccept(
     const uuid id,
     const boost::system::error_code& error) {
-
+	
   if (!error) {
 	uuid session_id(uuid_generator_());
 	
 	shared_ptr<Session> sess(new Session(this, session_id, listeners_[id]));
 	
     sessions_.insert(std::pair< uuid, shared_ptr<Session> >(session_id, sess));
+	sess->StartRead();
     RestartAccept(id);
   } else
     listeners_.erase(id);
 };
 
 RpcMethod Server::GetMethodHandler(const string& method_name) {
+  std::cout << "Want method " << method_name << std::endl;
   return 0;
 };
 
