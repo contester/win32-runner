@@ -9,6 +9,8 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+#include "rpc.pb.h"
+
 namespace contester {
 
 using boost::scoped_ptr;
@@ -23,7 +25,15 @@ using std::auto_ptr;
 using std::string;
 using std::map;
 
+
 class Rpc {
+ public:
+  scoped_ptr<ProtocolMessage> message_;
+
+  explicit Rpc(ProtocolMessage* message);
+  virtual ~Rpc() {};
+
+  virtual void Return(::google::protobuf::Message* response) = 0;
 };
 
 typedef boost::function<void (shared_ptr<Rpc>)> RpcMethod;
@@ -36,6 +46,8 @@ class Server {
   unordered_map< uuid, shared_ptr<Session> > sessions_;
   unordered_map< uuid, shared_ptr<tcp::acceptor> > acceptors_;
   unordered_map< uuid, shared_ptr<tcp::socket> > listeners_;
+
+  unordered_map< string, RpcMethod > methods_;
 
   Server(boost::asio::io_service& io_service);
   RpcMethod GetMethodHandler(const string& method_name);

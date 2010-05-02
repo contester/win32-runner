@@ -54,6 +54,19 @@ SubprocessWrapper::~SubprocessWrapper() {
     Subprocess_Destroy(sub_);
   sub_ = NULL;
 };
+
+
+void Test(shared_ptr<Rpc> rpc) {
+  std::cout << "test" << std::endl;
+
+  contester::proto::LocalExecutionResult response;
+
+  response.set_return_code(127);
+
+  rpc->Return(&response);
+};
+
+
 };
 
 using boost::asio::ip::tcp;
@@ -71,7 +84,9 @@ int main(int argc, char **argv) {
 
     boost::asio::io_service io_service;
     Server s(io_service);
-	s.Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
+    // s.methods_.insert(std::pair< string, contester::RpcMethod >("LocalExecute", contester::Test));
+    s.methods_["LocalExecute"] = contester::Test;
+    s.Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }
   catch (std::exception& e)

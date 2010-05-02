@@ -22,19 +22,17 @@ using boost::shared_ptr;
 using boost::unordered_map;
 using boost::uuids::uuid;
 
+Rpc::Rpc(ProtocolMessage* message)
+  : message_(message) {};
+
 class SessionRpc : public Rpc {
  public:
-  scoped_ptr<ProtocolMessage> message_;
-
   explicit SessionRpc(shared_ptr<Session> session, ProtocolMessage* message);
+  virtual ~SessionRpc() {};
+  virtual void Return(::google::protobuf::Message* response);
  private:
   shared_ptr<Session> session_;
 };
-
-SessionRpc::SessionRpc(shared_ptr<Session> session, ProtocolMessage* message)
-  : session_(session),
-    message_(message) {};
-
 
 class Session {
  public:
@@ -46,6 +44,8 @@ class Session {
   static const uint32_t kMaxRequestSize = 64 * 1024 * 1024;
 
   void StartRead();
+
+  void ReturnResult(SessionRpc* rpc, const string result);
  private:
   Server* server_;
   unordered_map< int, shared_ptr<SessionRpc> > requests_;
@@ -62,8 +62,22 @@ class Session {
       uint32_t request_size,
       const boost::system::error_code& error,
       size_t bytes_transferred);
+
+
+  void HandleWriteResponse(
+      string* response_string,
+      uint32_t* response_size,
+      uint32_t sequence_number,
+      const boost::system::error_code& error,
+      size_t bytes_transferred);
 };
 
+SessionRpc::SessionRpc(shared_ptr<Session> session, ProtocolMessage* message)
+  : Rpc(message), session_(session) {};
+
+void SessionRpc::Return(::google::protobuf::Message* response) {
+  session_->ReturnResult(this, response->SerializeAsString());
+};
 
 Session::Session(Server* server, uuid& id, shared_ptr<tcp::socket> socket)
   : server_(server),
@@ -73,7 +87,7 @@ Session::Session(Server* server, uuid& id, shared_ptr<tcp::socket> socket)
 void Session::StartRead() {
   uint32_t* request_size_buffer = new uint32_t;
   
-  std::cout << "StartRead" << std::endl;
+  // std::cout << "StartRead" << std::endl;
 
   boost::asio::async_read(
       *socket_,
@@ -86,6 +100,8 @@ void Session::StartRead() {
 };
 
 void Session::SelfDestruct() {
+  std::cout << "Closing session" << std::endl;
+
   socket_->close();
   server_->sessions_.erase(id_);
   
@@ -129,17 +145,58 @@ void Session::HandleReadProto(
     auto_ptr<ProtocolMessage> message(new ProtocolMessage());
 	
     if (message->ParseFromArray(request_buffer, request_size)) {
-	  shared_ptr<SessionRpc> sess(make_shared< SessionRpc, shared_ptr<Session>, ProtocolMessage* >(server_->sessions_[id_], message.release()));
+      shared_ptr<SessionRpc> sess(make_shared< SessionRpc, shared_ptr<Session>, ProtocolMessage* >(server_->sessions_[id_], message.release()));
       RpcMethod method = server_->GetMethodHandler(sess->message_->request().method_name());
       requests_[sess->message_->sequence_number()] = sess;
 
-      std::cout << bytes_transferred << std::endl;
-	  
+      StartRead();
+
       if (method)
-        method(requests_[message->sequence_number()]);
+        method(requests_[sess->message_->sequence_number()]);
     }
   } else SelfDestruct();
 };
+
+void Session::ReturnResult(SessionRpc* rpc, const string result) {
+  ProtocolMessage message;
+
+  message.set_sequence_number(rpc->message_->sequence_number());
+  message.mutable_response()->set_message(result);
+
+  auto_ptr<string> response_string(new string(message.SerializeAsString()));
+  auto_ptr<uint32_t> response_size(new uint32_t(htonl(response_string->size())));
+
+  boost::array<boost::asio::const_buffer, 2> buffers = {
+    boost::asio::buffer(response_size.get(), sizeof(*response_size)),
+    boost::asio::buffer(*response_string)
+  };
+
+  boost::asio::async_write(
+    *socket_,
+    buffers,
+    boost::bind(
+        &Session::HandleWriteResponse, this,
+        response_string.release(),
+        response_size.release(),
+        rpc->message_->sequence_number(),
+        boost::asio::placeholders::error,
+        boost::asio::placeholders::bytes_transferred));
+};
+
+void Session::HandleWriteResponse(
+    string* response_string,
+    uint32_t* response_size,
+    uint32_t sequence_number,
+    const boost::system::error_code& error,
+    size_t bytes_transferred) {
+  scoped_ptr<string> response_string_deleter(response_string);
+  scoped_ptr<uint32_t> response_size_deleter(response_size);
+
+  if (!error) {
+    requests_.erase(sequence_number);
+  } else SelfDestruct();
+};
+
 
 Server::Server(boost::asio::io_service& io_service)
     : io_service_(io_service) {};
@@ -183,6 +240,8 @@ void Server::HandleAccept(
 
 RpcMethod Server::GetMethodHandler(const string& method_name) {
   std::cout << "Want method " << method_name << std::endl;
+  if (methods_.count(method_name))
+    return methods_[method_name];
   return 0;
 };
 
