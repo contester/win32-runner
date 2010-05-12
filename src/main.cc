@@ -20,20 +20,49 @@ using std::string;
 namespace contester {
 
 class SubprocessWrapper {
- private:
-  struct Subprocess * sub_;
-
  public:
-  explicit SubprocessWrapper(proto::LocalExecutionParameters* params);
+  struct Subprocess * sub_;
+  shared_ptr<Rpc> rpc_;
+
+  explicit SubprocessWrapper(proto::LocalExecutionParameters* params, shared_ptr<Rpc> rpc);
   virtual ~SubprocessWrapper();
+  void Execute();
 };
 
 static bool Subprocess_SetProtoString(struct Subprocess * const sub, enum SUBPROCESS_PARAM param, const std::string& str) {
   return Subprocess_SetBufferUTF8(sub, param, str.c_str(), str.size());
 };
 
+void ExecuteDone(const struct Subprocess* sub__, void* wrapper) {
+  scoped_ptr<SubprocessWrapper> sub(reinterpret_cast<SubprocessWrapper*>(wrapper));
 
-SubprocessWrapper::SubprocessWrapper(proto::LocalExecutionParameters* params) {
+  contester::proto::LocalExecutionResult response;
+
+  const struct SubprocessResult * const result = Subprocess_GetResult(sub__);
+
+  response.set_return_code(result->ExitCode);
+  response.mutable_time()->set_user_time(result->ttUser);
+  response.mutable_time()->set_kernel_time(result->ttKernel);
+  response.mutable_time()->set_wall_time(result->ttWall);
+  response.set_memory(result->PeakMemory);
+  response.set_total_processes(result->TotalProcesses);
+  
+  const int succ = result->SuccessCode;
+
+  if (succ & EF_KILLED) response.mutable_flags()->set_killed(true);
+  if (succ & EF_TIME_LIMIT_HIT) response.mutable_flags()->set_time_limit_hit(true);
+  if (succ & EF_MEMORY_LIMIT_HIT) response.mutable_flags()->set_memory_limit_hit(true);
+  if (succ & EF_INACTIVE) response.mutable_flags()->set_inactive(true);
+  if (succ & EF_TIME_LIMIT_HARD) response.mutable_flags()->set_time_limit_hard(true);
+  if (succ & EF_TIME_LIMIT_HIT_POST) response.mutable_flags()->set_time_limit_hit_post(true);
+  if (succ & EF_MEMORY_LIMIT_HIT_POST) response.mutable_flags()->set_memory_limit_hit_post(true);
+  if (succ & EF_PROCESS_LIMIT_HIT) response.mutable_flags()->set_process_limit_hit(true);
+
+  sub->rpc_->Return(&response);
+}
+
+SubprocessWrapper::SubprocessWrapper(proto::LocalExecutionParameters* params, shared_ptr<Rpc> rpc)
+  : rpc_(rpc) {
   sub_ = Subprocess_Create();
   Subprocess_SetProtoString(sub_, RUNLIB_APPLICATION_NAME, params->application_name());
   Subprocess_SetProtoString(sub_, RUNLIB_COMMAND_LINE, params->command_line());
@@ -47,6 +76,8 @@ SubprocessWrapper::SubprocessWrapper(proto::LocalExecutionParameters* params) {
   Subprocess_SetBool(sub_, RUNLIB_CHECK_IDLENESS, params->check_idleness());
   Subprocess_SetBool(sub_, RUNLIB_RESTRICT_UI, params->restrict_ui());
   Subprocess_SetBool(sub_, RUNLIB_NO_JOB, params->no_job());
+
+  Subprocess_SetCallback(sub_, ExecuteDone, this);
 };
 
 SubprocessWrapper::~SubprocessWrapper() {
@@ -55,18 +86,17 @@ SubprocessWrapper::~SubprocessWrapper() {
   sub_ = NULL;
 };
 
+void SubprocessWrapper::Execute() {
+  Subprocess_Start(sub_);
+}
+
 
 void Test(shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
 
-  std::cout << request.DebugString() << std::endl;
-
-  contester::proto::LocalExecutionResult response;
-
-  response.set_return_code(127);
-
-  rpc->Return(&response);
+  SubprocessWrapper* sub = new SubprocessWrapper(&request, rpc);
+  sub->Execute();
 };
 
 
