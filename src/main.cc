@@ -19,26 +19,23 @@ using std::string;
 
 namespace contester {
 
-class SubprocessWrapper {
- public:
-  struct Subprocess * sub_;
-  shared_ptr<Rpc> rpc_;
-
-  explicit SubprocessWrapper(proto::LocalExecutionParameters* params, shared_ptr<Rpc> rpc);
-  virtual ~SubprocessWrapper();
-  void Execute();
-};
-
 static bool Subprocess_SetProtoString(struct Subprocess * const sub, enum SUBPROCESS_PARAM param, const std::string& str) {
   return Subprocess_SetBufferUTF8(sub, param, str.c_str(), str.size());
 };
 
-void ExecuteDone(const struct Subprocess* sub__, void* wrapper) {
-  scoped_ptr<SubprocessWrapper> sub(reinterpret_cast<SubprocessWrapper*>(wrapper));
+class SubprocessWrapper {
+ public:
+  shared_ptr<Rpc> rpc_;
+
+  SubprocessWrapper(shared_ptr<Rpc> rpc) : rpc_(rpc) {};
+};
+
+void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
+  scoped_ptr<SubprocessWrapper> sw(reinterpret_cast<SubprocessWrapper*>(wrapper));
 
   contester::proto::LocalExecutionResult response;
 
-  const struct SubprocessResult * const result = Subprocess_GetResult(sub__);
+  const struct SubprocessResult * const result = Subprocess_GetResult(sub);
 
   response.set_return_code(result->ExitCode);
   response.mutable_time()->set_user_time(result->ttUser);
@@ -58,45 +55,50 @@ void ExecuteDone(const struct Subprocess* sub__, void* wrapper) {
   if (succ & EF_MEMORY_LIMIT_HIT_POST) response.mutable_flags()->set_memory_limit_hit_post(true);
   if (succ & EF_PROCESS_LIMIT_HIT) response.mutable_flags()->set_process_limit_hit(true);
 
-  sub->rpc_->Return(&response);
+  Subprocess_Destroy(sub);
+
+  sw->rpc_->Return(&response);
 }
 
-SubprocessWrapper::SubprocessWrapper(proto::LocalExecutionParameters* params, shared_ptr<Rpc> rpc)
-  : rpc_(rpc) {
-  sub_ = Subprocess_Create();
-  Subprocess_SetProtoString(sub_, RUNLIB_APPLICATION_NAME, params->application_name());
-  Subprocess_SetProtoString(sub_, RUNLIB_COMMAND_LINE, params->command_line());
-  Subprocess_SetProtoString(sub_, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
+void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* params) {
+  Subprocess_SetProtoString(sub, RUNLIB_APPLICATION_NAME, params->application_name());
+  Subprocess_SetProtoString(sub, RUNLIB_COMMAND_LINE, params->command_line());
+  Subprocess_SetProtoString(sub, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
   
-  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
-  Subprocess_SetInt(sub_, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
-  Subprocess_SetInt(sub_, RUNLIB_MEMORY_LIMIT, params->memory_limit());
-  Subprocess_SetInt(sub_, RUNLIB_PROCESS_LIMIT, params->process_limit());
+  Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
+  Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
+  Subprocess_SetInt(sub, RUNLIB_MEMORY_LIMIT, params->memory_limit());
+  Subprocess_SetInt(sub, RUNLIB_PROCESS_LIMIT, params->process_limit());
 
-  Subprocess_SetBool(sub_, RUNLIB_CHECK_IDLENESS, params->check_idleness());
-  Subprocess_SetBool(sub_, RUNLIB_RESTRICT_UI, params->restrict_ui());
-  Subprocess_SetBool(sub_, RUNLIB_NO_JOB, params->no_job());
-
-  Subprocess_SetCallback(sub_, ExecuteDone, this);
+  Subprocess_SetBool(sub, RUNLIB_CHECK_IDLENESS, params->check_idleness());
+  Subprocess_SetBool(sub, RUNLIB_RESTRICT_UI, params->restrict_ui());
+  Subprocess_SetBool(sub, RUNLIB_NO_JOB, params->no_job());
 };
 
-SubprocessWrapper::~SubprocessWrapper() {
-  if (sub_)
-    Subprocess_Destroy(sub_);
-  sub_ = NULL;
+struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* params) {
+  struct Subprocess * const result = Subprocess_Create();
+
+  Subprocess_FillProto(result, params);
+  return result;
 };
 
-void SubprocessWrapper::Execute() {
-  Subprocess_Start(sub_);
-}
 
-
-void Test(shared_ptr<Rpc> rpc) {
+void LocalExecute(shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
 
-  SubprocessWrapper* sub = new SubprocessWrapper(&request, rpc);
-  sub->Execute();
+  struct Subprocess * const sub = Subprocess_CreateAndFill(&request);
+  SubprocessWrapper* sw = new SubprocessWrapper(rpc);
+
+  Subprocess_SetCallback(sub, ExecuteDone, sw);
+
+  if (!Subprocess_Start(sub)) {
+    delete sw;
+    Subprocess_Destroy(sub);
+    contester::proto::LocalExecutionResult response;
+    rpc->Return(&response);
+    return;
+  }
 };
 
 
@@ -116,7 +118,7 @@ int main(int argc, char **argv) {
 
     boost::asio::io_service io_service;
     shared_ptr<contester::Server> s(contester::CreateTCPServer(io_service));
-    s->AddMethod("LocalExecute", contester::Test);
+    s->AddMethod("LocalExecute", contester::LocalExecute);
     s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }
