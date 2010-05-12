@@ -16,4 +16,8 @@ void SessionRpc::Return(::google::protobuf::Message* response) {
   session_->ReturnResult(this, response->SerializeAsString());
 };
 
+const ProtocolMessage* const SessionRpc::GetMessage() const {
+  return message_.get();
+};
+
 };
