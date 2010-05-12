@@ -16,6 +16,7 @@ class Rpc {
 
   virtual void Return(::google::protobuf::Message* response) = 0;
   virtual const ProtocolMessage* const GetMessage() const = 0;
+  virtual const std::string& GetRequestMessage() const = 0;
 };
 
 };

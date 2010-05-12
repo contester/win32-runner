@@ -18,6 +18,7 @@ class SessionRpc : public Rpc {
 
   virtual void Return(::google::protobuf::Message* response);
   virtual const ProtocolMessage* const GetMessage() const;
+  virtual const std::string& GetRequestMessage() const;
 
  private:
   shared_ptr<Session> session_;

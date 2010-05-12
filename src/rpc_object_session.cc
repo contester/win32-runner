@@ -20,4 +20,9 @@ const ProtocolMessage* const SessionRpc::GetMessage() const {
   return message_.get();
 };
 
+const std::string& SessionRpc::GetRequestMessage() const {
+  return message_->request().message();
+};
+
+
 };

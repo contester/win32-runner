@@ -57,7 +57,10 @@ SubprocessWrapper::~SubprocessWrapper() {
 
 
 void Test(shared_ptr<Rpc> rpc) {
-  std::cout << "test" << std::endl;
+  contester::proto::LocalExecutionParameters request;
+  request.ParseFromString(rpc->GetRequestMessage());
+
+  std::cout << request.DebugString() << std::endl;
 
   contester::proto::LocalExecutionResult response;
 
