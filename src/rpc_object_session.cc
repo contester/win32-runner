@@ -7,8 +7,8 @@
 namespace contester {
 
 SessionRpc::SessionRpc(shared_ptr<Session> session, ProtocolMessage* message)
-  : message_(message),
-    session_(session) {};
+  : session_(session),
+    message_(message) {};
 
 SessionRpc::~SessionRpc() {};
 

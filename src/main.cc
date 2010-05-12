@@ -70,7 +70,6 @@ void Test(shared_ptr<Rpc> rpc) {
 };
 
 using boost::asio::ip::tcp;
-using contester::Server;
 
 
 int main(int argc, char **argv) {
@@ -83,10 +82,9 @@ int main(int argc, char **argv) {
     }
 
     boost::asio::io_service io_service;
-    Server s(io_service);
-    // s.methods_.insert(std::pair< string, contester::RpcMethod >("LocalExecute", contester::Test));
-    s.methods_["LocalExecute"] = contester::Test;
-    s.Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
+    shared_ptr<contester::Server> s(contester::CreateTCPServer(io_service));
+    s->AddMethod("LocalExecute", contester::Test);
+    s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }
   catch (std::exception& e)

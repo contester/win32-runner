@@ -1,3 +1,5 @@
+#pragma once
+
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -13,7 +15,7 @@ class SessionImpl : public Session {
   SessionImpl(Server* server, boost::uuids::uuid& id, boost::shared_ptr<boost::asio::ip::tcp::socket> socket);
   virtual ~SessionImpl();
 
-  virtual void StartRead();
+  virtual void Start();
   virtual void ReturnResult(SessionRpc* rpc, const std::string& result);
 
  private:

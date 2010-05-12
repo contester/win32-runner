@@ -30,6 +30,8 @@ Server::~Server() {};
 ServerImpl::ServerImpl(boost::asio::io_service& io_service)
     : io_service_(io_service) {};
 
+ServerImpl::~ServerImpl() {};
+
 void ServerImpl::Listen(const tcp::endpoint& endpoint) {
   const uuid id(uuid_generator_());
   shared_ptr<tcp::acceptor> acc(new tcp::acceptor(io_service_, endpoint));
@@ -75,5 +77,13 @@ bool ServerImpl::CallMethod(const std::string& method_name, shared_ptr<Rpc> rpc)
 shared_ptr<Session> ServerImpl::GetSessionById(uuid& id) {
   return sessions_[id];
 }
+
+void ServerImpl::AddMethod(const std::string& method_name, RpcMethod method) {
+  methods_[method_name] = method;
+};
+
+shared_ptr<Server> CreateTCPServer(boost::asio::io_service& io_service) {
+  return make_shared< ServerImpl, boost::asio::io_service& >(io_service);
+};
 
 };

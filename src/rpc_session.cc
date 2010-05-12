@@ -25,12 +25,16 @@ using boost::make_shared;
 using std::auto_ptr;
 
 
+Session::~Session() {};
+
 SessionImpl::SessionImpl(Server* server, uuid& id, shared_ptr<tcp::socket> socket)
   : server_(server),
     id_(id),
     socket_(socket) {};
 
-void SessionImpl::StartRead() {
+SessionImpl::~SessionImpl() {};
+
+void SessionImpl::Start() {
   uint32_t* request_size_buffer = new uint32_t;
   
   boost::asio::async_read(
@@ -91,7 +95,7 @@ void SessionImpl::HandleReadProto(
           make_shared< SessionRpc, shared_ptr<Session>, ProtocolMessage* >(
               server_->GetSessionById(id_), message.release()));
 
-      StartRead();
+      Start();
       server_->CallMethod(sess->GetMessage()->request().method_name(), sess);
     }
   } else SelfDestruct();
@@ -136,5 +140,13 @@ void SessionImpl::HandleWriteResponse(
     requests_.erase(sequence_number);
   } else SelfDestruct();
 };
+
+shared_ptr<Session> CreateTCPSession(
+    Server* server,
+    boost::uuids::uuid& id,
+    boost::shared_ptr<boost::asio::ip::tcp::socket> socket) {
+  return make_shared< SessionImpl, Server*, boost::uuids::uuid&, boost::shared_ptr<boost::asio::ip::tcp::socket> >(server, id, socket);
+};
+
 
 };
