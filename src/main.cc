@@ -101,6 +101,31 @@ void LocalExecute(shared_ptr<Rpc> rpc) {
   }
 };
 
+void GetLocalEnvironment(shared_ptr<Rpc> rpc) {
+  contester::proto::LocalEnvironment response;
+  WCHAR* const env = GetEnvironmentStringsW();
+  WCHAR* envp = env;
+
+  while (*envp) {
+    int bufsize = WideCharToMultiByte(CP_UTF8, 0, envp, -1, NULL, 0, NULL, NULL);
+    char* buf = new char[bufsize];
+    WideCharToMultiByte(CP_UTF8, 0, envp, -1, buf, bufsize, NULL, NULL);
+    std::string str_var(buf);
+    delete buf;
+    size_t split_pos = str_var.find_first_of("=");
+    if (split_pos != str_var.npos) {
+      proto::LocalEnvironment::Variable* const var = response.add_variable();
+      var->set_name(str_var.substr(0, split_pos));
+      var->set_value(str_var.substr(split_pos + 1));
+    }
+    while (*envp) envp++;
+    envp++;
+  }
+  FreeEnvironmentStringsW(env);
+
+  rpc->Return(&response);
+};
+
 
 };
 
@@ -119,6 +144,7 @@ int main(int argc, char **argv) {
     boost::asio::io_service io_service;
     shared_ptr<contester::Server> s(contester::CreateTCPServer(io_service));
     s->AddMethod("LocalExecute", contester::LocalExecute);
+    s->AddMethod("GetLocalEnvironment", contester::GetLocalEnvironment);
     s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }
