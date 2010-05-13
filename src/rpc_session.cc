@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
@@ -49,9 +50,13 @@ void SessionImpl::Start() {
 
 void SessionImpl::SelfDestruct() {
   socket_->close();
-  // server_->sessions_.erase(id_);
+
+  for (boost::unordered_map<int, boost::shared_ptr<SessionRpc> >::iterator i = requests_.begin(); i != requests_.end(); ++i) {
+    i->second->Cancel(i->second);
+  }
   
   requests_.clear();
+  server_->EraseSession(id_);
 };
 
 void SessionImpl::HandleReadSize(
@@ -96,6 +101,8 @@ void SessionImpl::HandleReadProto(
               server_->GetSessionById(id_), message.release()));
 
       Start();
+      requests_[sess->GetMessage()->sequence_number()] = sess;
+
       server_->CallMethod(sess->GetMessage()->request().method_name(), sess);
     }
   } else SelfDestruct();

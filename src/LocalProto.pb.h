@@ -525,26 +525,26 @@ class LocalExecutionParameters : public ::google::protobuf::Message {
   inline const ::contester::proto::LoginInformation& login_information() const;
   inline ::contester::proto::LoginInformation* mutable_login_information();
   
-  // optional .contester.proto.RedirectParameters stdin = 12;
-  inline bool has_stdin() const;
-  inline void clear_stdin();
-  static const int kStdinFieldNumber = 12;
-  inline const ::contester::proto::RedirectParameters& stdin() const;
-  inline ::contester::proto::RedirectParameters* mutable_stdin();
+  // optional .contester.proto.RedirectParameters std_in = 12;
+  inline bool has_std_in() const;
+  inline void clear_std_in();
+  static const int kStdInFieldNumber = 12;
+  inline const ::contester::proto::RedirectParameters& std_in() const;
+  inline ::contester::proto::RedirectParameters* mutable_std_in();
   
-  // optional .contester.proto.RedirectParameters stdout = 13;
-  inline bool has_stdout() const;
-  inline void clear_stdout();
-  static const int kStdoutFieldNumber = 13;
-  inline const ::contester::proto::RedirectParameters& stdout() const;
-  inline ::contester::proto::RedirectParameters* mutable_stdout();
+  // optional .contester.proto.RedirectParameters std_out = 13;
+  inline bool has_std_out() const;
+  inline void clear_std_out();
+  static const int kStdOutFieldNumber = 13;
+  inline const ::contester::proto::RedirectParameters& std_out() const;
+  inline ::contester::proto::RedirectParameters* mutable_std_out();
   
-  // optional .contester.proto.RedirectParameters stderr = 14;
-  inline bool has_stderr() const;
-  inline void clear_stderr();
-  static const int kStderrFieldNumber = 14;
-  inline const ::contester::proto::RedirectParameters& stderr() const;
-  inline ::contester::proto::RedirectParameters* mutable_stderr();
+  // optional .contester.proto.RedirectParameters std_err = 14;
+  inline bool has_std_err() const;
+  inline void clear_std_err();
+  static const int kStdErrFieldNumber = 14;
+  inline const ::contester::proto::RedirectParameters& std_err() const;
+  inline ::contester::proto::RedirectParameters* mutable_std_err();
   
   // @@protoc_insertion_point(class_scope:contester.proto.LocalExecutionParameters)
  private:
@@ -566,9 +566,9 @@ class LocalExecutionParameters : public ::google::protobuf::Message {
   ::google::protobuf::uint32 process_limit_;
   float time_limit_hard_;
   ::contester::proto::LoginInformation* login_information_;
-  ::contester::proto::RedirectParameters* stdin_;
-  ::contester::proto::RedirectParameters* stdout_;
-  ::contester::proto::RedirectParameters* stderr_;
+  ::contester::proto::RedirectParameters* std_in_;
+  ::contester::proto::RedirectParameters* std_out_;
+  ::contester::proto::RedirectParameters* std_err_;
   friend void  protobuf_AddDesc_LocalProto_2eproto();
   friend void protobuf_AssignDesc_LocalProto_2eproto();
   friend void protobuf_ShutdownFile_LocalProto_2eproto();
@@ -673,19 +673,19 @@ class LocalExecutionResult : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 return_code() const;
   inline void set_return_code(::google::protobuf::uint32 value);
   
-  // optional .contester.proto.Blob stdout = 5;
-  inline bool has_stdout() const;
-  inline void clear_stdout();
-  static const int kStdoutFieldNumber = 5;
-  inline const ::contester::proto::Blob& stdout() const;
-  inline ::contester::proto::Blob* mutable_stdout();
+  // optional .contester.proto.Blob std_out = 5;
+  inline bool has_std_out() const;
+  inline void clear_std_out();
+  static const int kStdOutFieldNumber = 5;
+  inline const ::contester::proto::Blob& std_out() const;
+  inline ::contester::proto::Blob* mutable_std_out();
   
-  // optional .contester.proto.Blob stderr = 6;
-  inline bool has_stderr() const;
-  inline void clear_stderr();
-  static const int kStderrFieldNumber = 6;
-  inline const ::contester::proto::Blob& stderr() const;
-  inline ::contester::proto::Blob* mutable_stderr();
+  // optional .contester.proto.Blob std_err = 6;
+  inline bool has_std_err() const;
+  inline void clear_std_err();
+  static const int kStdErrFieldNumber = 6;
+  inline const ::contester::proto::Blob& std_err() const;
+  inline ::contester::proto::Blob* mutable_std_err();
   
   // optional uint64 total_processes = 7;
   inline bool has_total_processes() const;
@@ -703,8 +703,8 @@ class LocalExecutionResult : public ::google::protobuf::Message {
   ::contester::proto::ExecutionResultTime* time_;
   ::google::protobuf::uint64 memory_;
   ::google::protobuf::uint32 return_code_;
-  ::contester::proto::Blob* stdout_;
-  ::contester::proto::Blob* stderr_;
+  ::contester::proto::Blob* std_out_;
+  ::contester::proto::Blob* std_err_;
   ::google::protobuf::uint64 total_processes_;
   friend void  protobuf_AddDesc_LocalProto_2eproto();
   friend void protobuf_AssignDesc_LocalProto_2eproto();
@@ -1381,55 +1381,55 @@ inline ::contester::proto::LoginInformation* LocalExecutionParameters::mutable_l
   return login_information_;
 }
 
-// optional .contester.proto.RedirectParameters stdin = 12;
-inline bool LocalExecutionParameters::has_stdin() const {
+// optional .contester.proto.RedirectParameters std_in = 12;
+inline bool LocalExecutionParameters::has_std_in() const {
   return _has_bit(12);
 }
-inline void LocalExecutionParameters::clear_stdin() {
-  if (stdin_ != NULL) stdin_->::contester::proto::RedirectParameters::Clear();
+inline void LocalExecutionParameters::clear_std_in() {
+  if (std_in_ != NULL) std_in_->::contester::proto::RedirectParameters::Clear();
   _clear_bit(12);
 }
-inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::stdin() const {
-  return stdin_ != NULL ? *stdin_ : *default_instance_->stdin_;
+inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::std_in() const {
+  return std_in_ != NULL ? *std_in_ : *default_instance_->std_in_;
 }
-inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_stdin() {
+inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_std_in() {
   _set_bit(12);
-  if (stdin_ == NULL) stdin_ = new ::contester::proto::RedirectParameters;
-  return stdin_;
+  if (std_in_ == NULL) std_in_ = new ::contester::proto::RedirectParameters;
+  return std_in_;
 }
 
-// optional .contester.proto.RedirectParameters stdout = 13;
-inline bool LocalExecutionParameters::has_stdout() const {
+// optional .contester.proto.RedirectParameters std_out = 13;
+inline bool LocalExecutionParameters::has_std_out() const {
   return _has_bit(13);
 }
-inline void LocalExecutionParameters::clear_stdout() {
-  if (stdout_ != NULL) stdout_->::contester::proto::RedirectParameters::Clear();
+inline void LocalExecutionParameters::clear_std_out() {
+  if (std_out_ != NULL) std_out_->::contester::proto::RedirectParameters::Clear();
   _clear_bit(13);
 }
-inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::stdout() const {
-  return stdout_ != NULL ? *stdout_ : *default_instance_->stdout_;
+inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::std_out() const {
+  return std_out_ != NULL ? *std_out_ : *default_instance_->std_out_;
 }
-inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_stdout() {
+inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_std_out() {
   _set_bit(13);
-  if (stdout_ == NULL) stdout_ = new ::contester::proto::RedirectParameters;
-  return stdout_;
+  if (std_out_ == NULL) std_out_ = new ::contester::proto::RedirectParameters;
+  return std_out_;
 }
 
-// optional .contester.proto.RedirectParameters stderr = 14;
-inline bool LocalExecutionParameters::has_stderr() const {
+// optional .contester.proto.RedirectParameters std_err = 14;
+inline bool LocalExecutionParameters::has_std_err() const {
   return _has_bit(14);
 }
-inline void LocalExecutionParameters::clear_stderr() {
-  if (stderr_ != NULL) stderr_->::contester::proto::RedirectParameters::Clear();
+inline void LocalExecutionParameters::clear_std_err() {
+  if (std_err_ != NULL) std_err_->::contester::proto::RedirectParameters::Clear();
   _clear_bit(14);
 }
-inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::stderr() const {
-  return stderr_ != NULL ? *stderr_ : *default_instance_->stderr_;
+inline const ::contester::proto::RedirectParameters& LocalExecutionParameters::std_err() const {
+  return std_err_ != NULL ? *std_err_ : *default_instance_->std_err_;
 }
-inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_stderr() {
+inline ::contester::proto::RedirectParameters* LocalExecutionParameters::mutable_std_err() {
   _set_bit(14);
-  if (stderr_ == NULL) stderr_ = new ::contester::proto::RedirectParameters;
-  return stderr_;
+  if (std_err_ == NULL) std_err_ = new ::contester::proto::RedirectParameters;
+  return std_err_;
 }
 
 // -------------------------------------------------------------------
@@ -1502,38 +1502,38 @@ inline void LocalExecutionResult::set_return_code(::google::protobuf::uint32 val
   return_code_ = value;
 }
 
-// optional .contester.proto.Blob stdout = 5;
-inline bool LocalExecutionResult::has_stdout() const {
+// optional .contester.proto.Blob std_out = 5;
+inline bool LocalExecutionResult::has_std_out() const {
   return _has_bit(4);
 }
-inline void LocalExecutionResult::clear_stdout() {
-  if (stdout_ != NULL) stdout_->::contester::proto::Blob::Clear();
+inline void LocalExecutionResult::clear_std_out() {
+  if (std_out_ != NULL) std_out_->::contester::proto::Blob::Clear();
   _clear_bit(4);
 }
-inline const ::contester::proto::Blob& LocalExecutionResult::stdout() const {
-  return stdout_ != NULL ? *stdout_ : *default_instance_->stdout_;
+inline const ::contester::proto::Blob& LocalExecutionResult::std_out() const {
+  return std_out_ != NULL ? *std_out_ : *default_instance_->std_out_;
 }
-inline ::contester::proto::Blob* LocalExecutionResult::mutable_stdout() {
+inline ::contester::proto::Blob* LocalExecutionResult::mutable_std_out() {
   _set_bit(4);
-  if (stdout_ == NULL) stdout_ = new ::contester::proto::Blob;
-  return stdout_;
+  if (std_out_ == NULL) std_out_ = new ::contester::proto::Blob;
+  return std_out_;
 }
 
-// optional .contester.proto.Blob stderr = 6;
-inline bool LocalExecutionResult::has_stderr() const {
+// optional .contester.proto.Blob std_err = 6;
+inline bool LocalExecutionResult::has_std_err() const {
   return _has_bit(5);
 }
-inline void LocalExecutionResult::clear_stderr() {
-  if (stderr_ != NULL) stderr_->::contester::proto::Blob::Clear();
+inline void LocalExecutionResult::clear_std_err() {
+  if (std_err_ != NULL) std_err_->::contester::proto::Blob::Clear();
   _clear_bit(5);
 }
-inline const ::contester::proto::Blob& LocalExecutionResult::stderr() const {
-  return stderr_ != NULL ? *stderr_ : *default_instance_->stderr_;
+inline const ::contester::proto::Blob& LocalExecutionResult::std_err() const {
+  return std_err_ != NULL ? *std_err_ : *default_instance_->std_err_;
 }
-inline ::contester::proto::Blob* LocalExecutionResult::mutable_stderr() {
+inline ::contester::proto::Blob* LocalExecutionResult::mutable_std_err() {
   _set_bit(5);
-  if (stderr_ == NULL) stderr_ = new ::contester::proto::Blob;
-  return stderr_;
+  if (std_err_ == NULL) std_err_ = new ::contester::proto::Blob;
+  return std_err_;
 }
 
 // optional uint64 total_processes = 7;

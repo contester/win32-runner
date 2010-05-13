@@ -19,10 +19,13 @@ class SessionRpc : public Rpc {
   virtual void Return(::google::protobuf::Message* response);
   virtual const ProtocolMessage* const GetMessage() const;
   virtual const std::string& GetRequestMessage() const;
+  virtual void SetCancelCallback(RpcMethod cancel_callback);
+  virtual void Cancel(boost::shared_ptr<Rpc> rpc);
 
  private:
   shared_ptr<Session> session_;
   scoped_ptr<ProtocolMessage> message_;
+  RpcMethod cancel_callback_;
 };
 
 };

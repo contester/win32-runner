@@ -78,6 +78,10 @@ shared_ptr<Session> ServerImpl::GetSessionById(uuid& id) {
   return sessions_[id];
 }
 
+void ServerImpl::EraseSession(uuid& id) {
+  sessions_.erase(id);
+}
+
 void ServerImpl::AddMethod(const std::string& method_name, RpcMethod method) {
   methods_[method_name] = method;
 };

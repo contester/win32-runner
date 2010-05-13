@@ -107,9 +107,9 @@ void protobuf_AssignDesc_LocalProto_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, process_limit_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, time_limit_hard_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, login_information_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, stdin_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, stdout_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, stderr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, std_in_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, std_out_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionParameters, std_err_),
   };
   LocalExecutionParameters_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -128,8 +128,8 @@ void protobuf_AssignDesc_LocalProto_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, time_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, memory_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, return_code_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, stdout_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, stderr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, std_out_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, std_err_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocalExecutionResult, total_processes_),
   };
   LocalExecutionResult_reflection_ =
@@ -218,7 +218,7 @@ void protobuf_AddDesc_LocalProto_2eproto() {
     "ent.Variable\0327\n\010Variable\022\014\n\004name\030\001 \002(\t\022\r"
     "\n\005value\030\002 \001(\t\022\016\n\006expand\030\003 \001(\010\"F\n\020LoginIn"
     "formation\022\020\n\010username\030\001 \002(\t\022\020\n\010password\030"
-    "\002 \002(\t\022\016\n\006domain\030\003 \001(\t\"\220\004\n\030LocalExecution"
+    "\002 \002(\t\022\016\n\006domain\030\003 \001(\t\"\223\004\n\030LocalExecution"
     "Parameters\022\030\n\020application_name\030\001 \001(\t\022\024\n\014"
     "command_line\030\002 \001(\t\022\031\n\021current_directory\030"
     "\003 \001(\t\022\022\n\ntime_limit\030\004 \001(\002\022\024\n\014memory_limi"
@@ -227,21 +227,22 @@ void protobuf_AddDesc_LocalProto_2eproto() {
     "ronment\022\023\n\013restrict_ui\030\010 \001(\010\022\016\n\006no_job\030\t"
     " \001(\010\022\025\n\rprocess_limit\030\n \001(\r\022\027\n\017time_limi"
     "t_hard\030\017 \001(\002\022<\n\021login_information\030\013 \001(\0132"
-    "!.contester.proto.LoginInformation\0222\n\005st"
-    "din\030\014 \001(\0132#.contester.proto.RedirectPara"
-    "meters\0223\n\006stdout\030\r \001(\0132#.contester.proto"
-    ".RedirectParameters\0223\n\006stderr\030\016 \001(\0132#.co"
-    "ntester.proto.RedirectParameters\"\214\002\n\024Loc"
-    "alExecutionResult\0224\n\005flags\030\001 \001(\0132%.conte"
-    "ster.proto.ExecutionResultFlags\0222\n\004time\030"
-    "\002 \001(\0132$.contester.proto.ExecutionResultT"
-    "ime\022\016\n\006memory\030\003 \001(\004\022\023\n\013return_code\030\004 \001(\r"
-    "\022%\n\006stdout\030\005 \001(\0132\025.contester.proto.Blob\022"
-    "%\n\006stderr\030\006 \001(\0132\025.contester.proto.Blob\022\027"
-    "\n\017total_processes\030\007 \001(\004\"\206\001\n\016LocalExecuti"
-    "on\022=\n\nparameters\030\001 \002(\0132).contester.proto"
-    ".LocalExecutionParameters\0225\n\006result\030\002 \001("
-    "\0132%.contester.proto.LocalExecutionResult", 1240);
+    "!.contester.proto.LoginInformation\0223\n\006st"
+    "d_in\030\014 \001(\0132#.contester.proto.RedirectPar"
+    "ameters\0224\n\007std_out\030\r \001(\0132#.contester.pro"
+    "to.RedirectParameters\0224\n\007std_err\030\016 \001(\0132#"
+    ".contester.proto.RedirectParameters\"\216\002\n\024"
+    "LocalExecutionResult\0224\n\005flags\030\001 \001(\0132%.co"
+    "ntester.proto.ExecutionResultFlags\0222\n\004ti"
+    "me\030\002 \001(\0132$.contester.proto.ExecutionResu"
+    "ltTime\022\016\n\006memory\030\003 \001(\004\022\023\n\013return_code\030\004 "
+    "\001(\r\022&\n\007std_out\030\005 \001(\0132\025.contester.proto.B"
+    "lob\022&\n\007std_err\030\006 \001(\0132\025.contester.proto.B"
+    "lob\022\027\n\017total_processes\030\007 \001(\004\"\206\001\n\016LocalEx"
+    "ecution\022=\n\nparameters\030\001 \002(\0132).contester."
+    "proto.LocalExecutionParameters\0225\n\006result"
+    "\030\002 \001(\0132%.contester.proto.LocalExecutionR"
+    "esult", 1245);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "LocalProto.proto", &protobuf_RegisterTypes);
   LocalEnvironment::default_instance_ = new LocalEnvironment();
@@ -1197,9 +1198,9 @@ const int LocalExecutionParameters::kNoJobFieldNumber;
 const int LocalExecutionParameters::kProcessLimitFieldNumber;
 const int LocalExecutionParameters::kTimeLimitHardFieldNumber;
 const int LocalExecutionParameters::kLoginInformationFieldNumber;
-const int LocalExecutionParameters::kStdinFieldNumber;
-const int LocalExecutionParameters::kStdoutFieldNumber;
-const int LocalExecutionParameters::kStderrFieldNumber;
+const int LocalExecutionParameters::kStdInFieldNumber;
+const int LocalExecutionParameters::kStdOutFieldNumber;
+const int LocalExecutionParameters::kStdErrFieldNumber;
 #endif  // !_MSC_VER
 
 LocalExecutionParameters::LocalExecutionParameters()
@@ -1210,9 +1211,9 @@ LocalExecutionParameters::LocalExecutionParameters()
 void LocalExecutionParameters::InitAsDefaultInstance() {
   environment_ = const_cast< ::contester::proto::LocalEnvironment*>(&::contester::proto::LocalEnvironment::default_instance());
   login_information_ = const_cast< ::contester::proto::LoginInformation*>(&::contester::proto::LoginInformation::default_instance());
-  stdin_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
-  stdout_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
-  stderr_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
+  std_in_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
+  std_out_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
+  std_err_ = const_cast< ::contester::proto::RedirectParameters*>(&::contester::proto::RedirectParameters::default_instance());
 }
 
 LocalExecutionParameters::LocalExecutionParameters(const LocalExecutionParameters& from)
@@ -1235,9 +1236,9 @@ void LocalExecutionParameters::SharedCtor() {
   process_limit_ = 0u;
   time_limit_hard_ = 0;
   login_information_ = NULL;
-  stdin_ = NULL;
-  stdout_ = NULL;
-  stderr_ = NULL;
+  std_in_ = NULL;
+  std_out_ = NULL;
+  std_err_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1258,9 +1259,9 @@ void LocalExecutionParameters::SharedDtor() {
   if (this != default_instance_) {
     delete environment_;
     delete login_information_;
-    delete stdin_;
-    delete stdout_;
-    delete stderr_;
+    delete std_in_;
+    delete std_out_;
+    delete std_err_;
   }
 }
 
@@ -1317,13 +1318,13 @@ void LocalExecutionParameters::Clear() {
       if (login_information_ != NULL) login_information_->::contester::proto::LoginInformation::Clear();
     }
     if (_has_bit(12)) {
-      if (stdin_ != NULL) stdin_->::contester::proto::RedirectParameters::Clear();
+      if (std_in_ != NULL) std_in_->::contester::proto::RedirectParameters::Clear();
     }
     if (_has_bit(13)) {
-      if (stdout_ != NULL) stdout_->::contester::proto::RedirectParameters::Clear();
+      if (std_out_ != NULL) std_out_->::contester::proto::RedirectParameters::Clear();
     }
     if (_has_bit(14)) {
-      if (stderr_ != NULL) stderr_->::contester::proto::RedirectParameters::Clear();
+      if (std_err_ != NULL) std_err_->::contester::proto::RedirectParameters::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1506,45 +1507,45 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(98)) goto parse_stdin;
+        if (input->ExpectTag(98)) goto parse_std_in;
         break;
       }
       
-      // optional .contester.proto.RedirectParameters stdin = 12;
+      // optional .contester.proto.RedirectParameters std_in = 12;
       case 12: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stdin:
+         parse_std_in:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stdin()));
+               input, mutable_std_in()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(106)) goto parse_stdout;
+        if (input->ExpectTag(106)) goto parse_std_out;
         break;
       }
       
-      // optional .contester.proto.RedirectParameters stdout = 13;
+      // optional .contester.proto.RedirectParameters std_out = 13;
       case 13: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stdout:
+         parse_std_out:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stdout()));
+               input, mutable_std_out()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(114)) goto parse_stderr;
+        if (input->ExpectTag(114)) goto parse_std_err;
         break;
       }
       
-      // optional .contester.proto.RedirectParameters stderr = 14;
+      // optional .contester.proto.RedirectParameters std_err = 14;
       case 14: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stderr:
+         parse_std_err:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stderr()));
+               input, mutable_std_err()));
         } else {
           goto handle_uninterpreted;
         }
@@ -1655,22 +1656,22 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
       11, this->login_information(), output);
   }
   
-  // optional .contester.proto.RedirectParameters stdin = 12;
+  // optional .contester.proto.RedirectParameters std_in = 12;
   if (_has_bit(12)) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      12, this->stdin(), output);
+      12, this->std_in(), output);
   }
   
-  // optional .contester.proto.RedirectParameters stdout = 13;
+  // optional .contester.proto.RedirectParameters std_out = 13;
   if (_has_bit(13)) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      13, this->stdout(), output);
+      13, this->std_out(), output);
   }
   
-  // optional .contester.proto.RedirectParameters stderr = 14;
+  // optional .contester.proto.RedirectParameters std_err = 14;
   if (_has_bit(14)) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      14, this->stderr(), output);
+      14, this->std_err(), output);
   }
   
   // optional float time_limit_hard = 15;
@@ -1760,25 +1761,25 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
         11, this->login_information(), target);
   }
   
-  // optional .contester.proto.RedirectParameters stdin = 12;
+  // optional .contester.proto.RedirectParameters std_in = 12;
   if (_has_bit(12)) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        12, this->stdin(), target);
+        12, this->std_in(), target);
   }
   
-  // optional .contester.proto.RedirectParameters stdout = 13;
+  // optional .contester.proto.RedirectParameters std_out = 13;
   if (_has_bit(13)) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        13, this->stdout(), target);
+        13, this->std_out(), target);
   }
   
-  // optional .contester.proto.RedirectParameters stderr = 14;
+  // optional .contester.proto.RedirectParameters std_err = 14;
   if (_has_bit(14)) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        14, this->stderr(), target);
+        14, this->std_err(), target);
   }
   
   // optional float time_limit_hard = 15;
@@ -1873,25 +1874,25 @@ int LocalExecutionParameters::ByteSize() const {
           this->login_information());
     }
     
-    // optional .contester.proto.RedirectParameters stdin = 12;
-    if (has_stdin()) {
+    // optional .contester.proto.RedirectParameters std_in = 12;
+    if (has_std_in()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->stdin());
+          this->std_in());
     }
     
-    // optional .contester.proto.RedirectParameters stdout = 13;
-    if (has_stdout()) {
+    // optional .contester.proto.RedirectParameters std_out = 13;
+    if (has_std_out()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->stdout());
+          this->std_out());
     }
     
-    // optional .contester.proto.RedirectParameters stderr = 14;
-    if (has_stderr()) {
+    // optional .contester.proto.RedirectParameters std_err = 14;
+    if (has_std_err()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->stderr());
+          this->std_err());
     }
     
   }
@@ -1960,13 +1961,13 @@ void LocalExecutionParameters::MergeFrom(const LocalExecutionParameters& from) {
       mutable_login_information()->::contester::proto::LoginInformation::MergeFrom(from.login_information());
     }
     if (from._has_bit(12)) {
-      mutable_stdin()->::contester::proto::RedirectParameters::MergeFrom(from.stdin());
+      mutable_std_in()->::contester::proto::RedirectParameters::MergeFrom(from.std_in());
     }
     if (from._has_bit(13)) {
-      mutable_stdout()->::contester::proto::RedirectParameters::MergeFrom(from.stdout());
+      mutable_std_out()->::contester::proto::RedirectParameters::MergeFrom(from.std_out());
     }
     if (from._has_bit(14)) {
-      mutable_stderr()->::contester::proto::RedirectParameters::MergeFrom(from.stderr());
+      mutable_std_err()->::contester::proto::RedirectParameters::MergeFrom(from.std_err());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -2009,9 +2010,9 @@ void LocalExecutionParameters::Swap(LocalExecutionParameters* other) {
     std::swap(process_limit_, other->process_limit_);
     std::swap(time_limit_hard_, other->time_limit_hard_);
     std::swap(login_information_, other->login_information_);
-    std::swap(stdin_, other->stdin_);
-    std::swap(stdout_, other->stdout_);
-    std::swap(stderr_, other->stderr_);
+    std::swap(std_in_, other->std_in_);
+    std::swap(std_out_, other->std_out_);
+    std::swap(std_err_, other->std_err_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2034,8 +2035,8 @@ const int LocalExecutionResult::kFlagsFieldNumber;
 const int LocalExecutionResult::kTimeFieldNumber;
 const int LocalExecutionResult::kMemoryFieldNumber;
 const int LocalExecutionResult::kReturnCodeFieldNumber;
-const int LocalExecutionResult::kStdoutFieldNumber;
-const int LocalExecutionResult::kStderrFieldNumber;
+const int LocalExecutionResult::kStdOutFieldNumber;
+const int LocalExecutionResult::kStdErrFieldNumber;
 const int LocalExecutionResult::kTotalProcessesFieldNumber;
 #endif  // !_MSC_VER
 
@@ -2047,8 +2048,8 @@ LocalExecutionResult::LocalExecutionResult()
 void LocalExecutionResult::InitAsDefaultInstance() {
   flags_ = const_cast< ::contester::proto::ExecutionResultFlags*>(&::contester::proto::ExecutionResultFlags::default_instance());
   time_ = const_cast< ::contester::proto::ExecutionResultTime*>(&::contester::proto::ExecutionResultTime::default_instance());
-  stdout_ = const_cast< ::contester::proto::Blob*>(&::contester::proto::Blob::default_instance());
-  stderr_ = const_cast< ::contester::proto::Blob*>(&::contester::proto::Blob::default_instance());
+  std_out_ = const_cast< ::contester::proto::Blob*>(&::contester::proto::Blob::default_instance());
+  std_err_ = const_cast< ::contester::proto::Blob*>(&::contester::proto::Blob::default_instance());
 }
 
 LocalExecutionResult::LocalExecutionResult(const LocalExecutionResult& from)
@@ -2063,8 +2064,8 @@ void LocalExecutionResult::SharedCtor() {
   time_ = NULL;
   memory_ = GOOGLE_ULONGLONG(0);
   return_code_ = 0u;
-  stdout_ = NULL;
-  stderr_ = NULL;
+  std_out_ = NULL;
+  std_err_ = NULL;
   total_processes_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -2077,8 +2078,8 @@ void LocalExecutionResult::SharedDtor() {
   if (this != default_instance_) {
     delete flags_;
     delete time_;
-    delete stdout_;
-    delete stderr_;
+    delete std_out_;
+    delete std_err_;
   }
 }
 
@@ -2113,10 +2114,10 @@ void LocalExecutionResult::Clear() {
     memory_ = GOOGLE_ULONGLONG(0);
     return_code_ = 0u;
     if (_has_bit(4)) {
-      if (stdout_ != NULL) stdout_->::contester::proto::Blob::Clear();
+      if (std_out_ != NULL) std_out_->::contester::proto::Blob::Clear();
     }
     if (_has_bit(5)) {
-      if (stderr_ != NULL) stderr_->::contester::proto::Blob::Clear();
+      if (std_err_ != NULL) std_err_->::contester::proto::Blob::Clear();
     }
     total_processes_ = GOOGLE_ULONGLONG(0);
   }
@@ -2185,31 +2186,31 @@ bool LocalExecutionResult::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(42)) goto parse_stdout;
+        if (input->ExpectTag(42)) goto parse_std_out;
         break;
       }
       
-      // optional .contester.proto.Blob stdout = 5;
+      // optional .contester.proto.Blob std_out = 5;
       case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stdout:
+         parse_std_out:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stdout()));
+               input, mutable_std_out()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_stderr;
+        if (input->ExpectTag(50)) goto parse_std_err;
         break;
       }
       
-      // optional .contester.proto.Blob stderr = 6;
+      // optional .contester.proto.Blob std_err = 6;
       case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stderr:
+         parse_std_err:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stderr()));
+               input, mutable_std_err()));
         } else {
           goto handle_uninterpreted;
         }
@@ -2273,16 +2274,16 @@ void LocalExecutionResult::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->return_code(), output);
   }
   
-  // optional .contester.proto.Blob stdout = 5;
+  // optional .contester.proto.Blob std_out = 5;
   if (_has_bit(4)) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->stdout(), output);
+      5, this->std_out(), output);
   }
   
-  // optional .contester.proto.Blob stderr = 6;
+  // optional .contester.proto.Blob std_err = 6;
   if (_has_bit(5)) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      6, this->stderr(), output);
+      6, this->std_err(), output);
   }
   
   // optional uint64 total_processes = 7;
@@ -2322,18 +2323,18 @@ void LocalExecutionResult::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->return_code(), target);
   }
   
-  // optional .contester.proto.Blob stdout = 5;
+  // optional .contester.proto.Blob std_out = 5;
   if (_has_bit(4)) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        5, this->stdout(), target);
+        5, this->std_out(), target);
   }
   
-  // optional .contester.proto.Blob stderr = 6;
+  // optional .contester.proto.Blob std_err = 6;
   if (_has_bit(5)) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        6, this->stderr(), target);
+        6, this->std_err(), target);
   }
   
   // optional uint64 total_processes = 7;
@@ -2380,18 +2381,18 @@ int LocalExecutionResult::ByteSize() const {
           this->return_code());
     }
     
-    // optional .contester.proto.Blob stdout = 5;
-    if (has_stdout()) {
+    // optional .contester.proto.Blob std_out = 5;
+    if (has_std_out()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->stdout());
+          this->std_out());
     }
     
-    // optional .contester.proto.Blob stderr = 6;
-    if (has_stderr()) {
+    // optional .contester.proto.Blob std_err = 6;
+    if (has_std_err()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->stderr());
+          this->std_err());
     }
     
     // optional uint64 total_processes = 7;
@@ -2441,10 +2442,10 @@ void LocalExecutionResult::MergeFrom(const LocalExecutionResult& from) {
       set_return_code(from.return_code());
     }
     if (from._has_bit(4)) {
-      mutable_stdout()->::contester::proto::Blob::MergeFrom(from.stdout());
+      mutable_std_out()->::contester::proto::Blob::MergeFrom(from.std_out());
     }
     if (from._has_bit(5)) {
-      mutable_stderr()->::contester::proto::Blob::MergeFrom(from.stderr());
+      mutable_std_err()->::contester::proto::Blob::MergeFrom(from.std_err());
     }
     if (from._has_bit(6)) {
       set_total_processes(from.total_processes());
@@ -2476,8 +2477,8 @@ void LocalExecutionResult::Swap(LocalExecutionResult* other) {
     std::swap(time_, other->time_);
     std::swap(memory_, other->memory_);
     std::swap(return_code_, other->return_code_);
-    std::swap(stdout_, other->stdout_);
-    std::swap(stderr_, other->stderr_);
+    std::swap(std_out_, other->std_out_);
+    std::swap(std_err_, other->std_err_);
     std::swap(total_processes_, other->total_processes_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

@@ -24,5 +24,12 @@ const std::string& SessionRpc::GetRequestMessage() const {
   return message_->request().message();
 };
 
+void SessionRpc::SetCancelCallback(RpcMethod cancel_callback) {
+  cancel_callback_ = cancel_callback;
+};
+
+void SessionRpc::Cancel(shared_ptr<Rpc> rpc) {
+  cancel_callback_(rpc);
+};
 
 };

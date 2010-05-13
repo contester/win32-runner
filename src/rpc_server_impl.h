@@ -24,6 +24,7 @@ class ServerImpl : public Server {
   virtual bool CallMethod(const std::string& method_name, boost::shared_ptr<Rpc> rpc);
   virtual boost::shared_ptr<Session> GetSessionById(boost::uuids::uuid& id);
   virtual void AddMethod(const std::string& method_name, RpcMethod method);
+  virtual void EraseSession(boost::uuids::uuid& id);
   
  private:
   boost::asio::io_service& io_service_;

@@ -38,9 +38,9 @@ message LocalExecutionParameters {
 
   optional LoginInformation login_information = 11;
 
-  optional RedirectParameters stdin = 12;
-  optional RedirectParameters stdout = 13;
-  optional RedirectParameters stderr = 14;
+  optional RedirectParameters std_in = 12;
+  optional RedirectParameters std_out = 13;
+  optional RedirectParameters std_err = 14;
 };
 
 message LocalExecutionResult {
@@ -48,8 +48,8 @@ message LocalExecutionResult {
   optional ExecutionResultTime time = 2;
   optional uint64 memory = 3;
   optional uint32 return_code = 4;
-  optional Blob stdout = 5;
-  optional Blob stderr = 6;
+  optional Blob std_out = 5;
+  optional Blob std_err = 6;
   optional uint64 total_processes = 7;
 };
 
