@@ -60,7 +60,30 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
   sw->rpc_->Return(&response);
 }
 
-void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* params) {
+void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnvironment * const local_environment, const proto::LocalEnvironment* const environment) {
+  std::map< std::string, std::string > envmap;
+
+  if (!environment->empty()) {
+    for (int i = 0; i < local_environment->variable_size(); i++)
+      envmap[local_environment->variable(i).name()] = local_environment->variable(i).value();
+  }
+
+  for (int i = 0; i < environment->variable_size(); i++) {
+    envmap[environment->variable(i).name()] = environment->variable(i).value();
+  }
+
+  std::string strenv;
+
+  for (std::map<std::string, std::string>::iterator i = envmap.begin(); i != envmap.end(); ++i) {
+    strenv += i->first + "=" + i->second + "\0";
+  }
+
+  strenv += "\0";
+
+  Subprocess_SetProtoString(sub, RUNLIB_ENVIRONMENT, strenv);
+};
+
+void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* const params, const proto::LocalEnvironment* const local_environment) {
   Subprocess_SetProtoString(sub, RUNLIB_APPLICATION_NAME, params->application_name());
   Subprocess_SetProtoString(sub, RUNLIB_COMMAND_LINE, params->command_line());
   Subprocess_SetProtoString(sub, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
@@ -73,21 +96,25 @@ void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionPa
   Subprocess_SetBool(sub, RUNLIB_CHECK_IDLENESS, params->check_idleness());
   Subprocess_SetBool(sub, RUNLIB_RESTRICT_UI, params->restrict_ui());
   Subprocess_SetBool(sub, RUNLIB_NO_JOB, params->no_job());
+
+  if (params->has_environment())
+    Subprocess_FillEnv(sub, local_environment, &params->environment()); 
 };
 
-struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* params) {
+struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* params, const proto::LocalEnvironment* const local_environment) {
   struct Subprocess * const result = Subprocess_Create();
 
-  Subprocess_FillProto(result, params);
+  Subprocess_FillProto(result, params, local_environment);
   return result;
 };
 
 
-void LocalExecute(shared_ptr<Rpc> rpc) {
+
+void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
 
-  struct Subprocess * const sub = Subprocess_CreateAndFill(&request);
+  struct Subprocess * const sub = Subprocess_CreateAndFill(&request, local_environment);
   SubprocessWrapper* sw = new SubprocessWrapper(rpc);
 
   Subprocess_SetCallback(sub, ExecuteDone, sw);
@@ -101,8 +128,11 @@ void LocalExecute(shared_ptr<Rpc> rpc) {
   }
 };
 
-void GetLocalEnvironment(shared_ptr<Rpc> rpc) {
-  contester::proto::LocalEnvironment response;
+void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {
+  rpc->Return(environment);
+};
+
+void PopulateLocalEnvironment(proto::LocalEnvironment* const environment) {
   WCHAR* const env = GetEnvironmentStringsW();
   WCHAR* envp = env;
 
@@ -114,7 +144,7 @@ void GetLocalEnvironment(shared_ptr<Rpc> rpc) {
     delete buf;
     size_t split_pos = str_var.find_first_of("=");
     if (split_pos != str_var.npos) {
-      proto::LocalEnvironment::Variable* const var = response.add_variable();
+      proto::LocalEnvironment::Variable* const var = environment->add_variable();
       var->set_name(str_var.substr(0, split_pos));
       var->set_value(str_var.substr(split_pos + 1));
     }
@@ -122,15 +152,11 @@ void GetLocalEnvironment(shared_ptr<Rpc> rpc) {
     envp++;
   }
   FreeEnvironmentStringsW(env);
-
-  rpc->Return(&response);
 };
-
 
 };
 
 using boost::asio::ip::tcp;
-
 
 int main(int argc, char **argv) {
   try
@@ -143,8 +169,10 @@ int main(int argc, char **argv) {
 
     boost::asio::io_service io_service;
     shared_ptr<contester::Server> s(contester::CreateTCPServer(io_service));
-    s->AddMethod("LocalExecute", contester::LocalExecute);
-    s->AddMethod("GetLocalEnvironment", contester::GetLocalEnvironment);
+    contester::proto::LocalEnvironment env;
+    contester::PopulateLocalEnvironment(&env);
+    s->AddMethod("LocalExecute", boost::bind(contester::LocalExecute, &env, _1));
+    s->AddMethod("GetLocalEnvironment", boost::bind(contester::GetLocalEnvironment, &env, _1));
     s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }
