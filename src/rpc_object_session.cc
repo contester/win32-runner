@@ -16,6 +16,10 @@ void SessionRpc::Return(::google::protobuf::Message* response) {
   session_->ReturnResult(this, response->SerializeAsString());
 };
 
+void SessionRpc::ReturnError(const std::string& traceback) {
+  session_->ReturnError(this, traceback);
+};
+
 const ProtocolMessage* const SessionRpc::GetMessage() const {
   return message_.get();
 };

@@ -21,6 +21,7 @@ class SessionRpc : public Rpc {
   virtual const std::string& GetRequestMessage() const;
   virtual void SetCancelCallback(RpcMethod cancel_callback);
   virtual void Cancel(boost::shared_ptr<Rpc> rpc);
+  virtual void ReturnError(const std::string& traceback);
 
  private:
   shared_ptr<Session> session_;

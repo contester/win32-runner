@@ -22,6 +22,7 @@ class Rpc {
   virtual const std::string& GetRequestMessage() const = 0;
   virtual void SetCancelCallback(RpcMethod cancel_callback) = 0;
   virtual void Cancel(boost::shared_ptr<Rpc> rpc) = 0;
+  virtual void ReturnError(const std::string& traceback) = 0;
 };
 
 };

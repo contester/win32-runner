@@ -17,6 +17,8 @@ class SessionImpl : public Session {
 
   virtual void Start();
   virtual void ReturnResult(SessionRpc* rpc, const std::string& result);
+  virtual void ReturnError(SessionRpc* rpc, const std::string& traceback);
+  virtual void ReturnResponse(SessionRpc* rpc, const std::string& response_string_b);
 
  private:
   Server* server_;

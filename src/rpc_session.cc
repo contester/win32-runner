@@ -108,13 +108,8 @@ void SessionImpl::HandleReadProto(
   } else SelfDestruct();
 };
 
-void SessionImpl::ReturnResult(SessionRpc* rpc, const std::string& result) {
-  ProtocolMessage message;
-
-  message.set_sequence_number(rpc->GetMessage()->sequence_number());
-  message.mutable_response()->set_message(result);
-
-  auto_ptr<std::string> response_string(new std::string(message.SerializeAsString()));
+void SessionImpl::ReturnResponse(SessionRpc* rpc, const std::string& response_string_b) {
+  auto_ptr<std::string> response_string(new std::string(response_string_b));
   auto_ptr<uint32_t> response_size(new uint32_t(htonl(response_string->size())));
 
   boost::array<boost::asio::const_buffer, 2> buffers = {
@@ -132,7 +127,27 @@ void SessionImpl::ReturnResult(SessionRpc* rpc, const std::string& result) {
         rpc->GetMessage()->sequence_number(),
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
+}
+
+void SessionImpl::ReturnResult(SessionRpc* rpc, const std::string& result) {
+  ProtocolMessage message;
+
+  message.set_sequence_number(rpc->GetMessage()->sequence_number());
+  message.mutable_response()->set_message(result);
+
+  ReturnResponse(rpc, message.SerializeAsString());
 };
+
+
+void SessionImpl::ReturnError(SessionRpc* rpc, const std::string& traceback) {
+  ProtocolMessage message;
+
+  message.set_sequence_number(rpc->GetMessage()->sequence_number());
+  message.mutable_error()->mutable_exception_info()->set_traceback(traceback);
+
+  ReturnResponse(rpc, message.SerializeAsString());
+};
+  
 
 void SessionImpl::HandleWriteResponse(
     std::string* response_string,
