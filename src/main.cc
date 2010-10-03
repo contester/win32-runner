@@ -71,6 +71,7 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
 }
 
 void TerminateExecution(struct Subprocess * const sub, shared_ptr<Rpc> rpc) {
+  std::cout << "Rpc channel destroyed, terminating process" << std::endl;
   Subprocess_Terminate(sub);
 }
 
@@ -101,18 +102,28 @@ void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnviron
 };
 
 void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* const params, const proto::LocalEnvironment* const local_environment) {
-  Subprocess_SetProtoString(sub, RUNLIB_APPLICATION_NAME, params->application_name());
-  Subprocess_SetProtoString(sub, RUNLIB_COMMAND_LINE, params->command_line());
-  Subprocess_SetProtoString(sub, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
-  
-  Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
-  Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
-  Subprocess_SetInt(sub, RUNLIB_MEMORY_LIMIT, params->memory_limit());
-  Subprocess_SetInt(sub, RUNLIB_PROCESS_LIMIT, params->process_limit());
+  if (params->has_application_name())
+    Subprocess_SetProtoString(sub, RUNLIB_APPLICATION_NAME, params->application_name());
+  if (params->has_command_line())
+    Subprocess_SetProtoString(sub, RUNLIB_COMMAND_LINE, params->command_line());
+  if (params->has_current_directory())
+    Subprocess_SetProtoString(sub, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
 
-  Subprocess_SetBool(sub, RUNLIB_CHECK_IDLENESS, params->check_idleness());
-  Subprocess_SetBool(sub, RUNLIB_RESTRICT_UI, params->restrict_ui());
-  Subprocess_SetBool(sub, RUNLIB_NO_JOB, params->no_job());
+  if (params->has_time_limit())  
+    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
+  if (params->has_time_limit_hard())
+    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
+  if (params->has_memory_limit())
+    Subprocess_SetInt(sub, RUNLIB_MEMORY_LIMIT, params->memory_limit());
+  if (params->has_process_limit())
+    Subprocess_SetInt(sub, RUNLIB_PROCESS_LIMIT, params->process_limit());
+
+  if (params->has_check_idleness())
+    Subprocess_SetBool(sub, RUNLIB_CHECK_IDLENESS, params->check_idleness());
+  if (params->has_restrict_ui())
+    Subprocess_SetBool(sub, RUNLIB_RESTRICT_UI, params->restrict_ui());
+  if (params->has_no_job())
+    Subprocess_SetBool(sub, RUNLIB_NO_JOB, params->no_job());
 
   if (params->has_environment())
     Subprocess_FillEnv(sub, local_environment, &params->environment()); 
