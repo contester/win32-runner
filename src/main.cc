@@ -77,7 +77,7 @@ void TerminateExecution(struct Subprocess * const sub, shared_ptr<Rpc> rpc) {
 void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnvironment * const local_environment, const proto::LocalEnvironment* const environment) {
   std::map< std::string, std::string > envmap;
 
-  if (!local_environment->empty()) {
+  if (!environment->empty()) {
     for (int i = 0; i < local_environment->variable_size(); i++) {
       if (!local_environment->variable(i).name().empty())
         envmap[local_environment->variable(i).name()] = local_environment->variable(i).value();
@@ -143,6 +143,8 @@ struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* pa
   Subprocess_FillProto(result, params, local_environment);
   return result;
 };
+
+
 
 void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
