@@ -31,9 +31,8 @@ class SubprocessWrapper {
   SubprocessWrapper(shared_ptr<Rpc> rpc) : rpc_(rpc) {};
 };
 
-void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
+void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
   scoped_ptr<SubprocessWrapper> sw(reinterpret_cast<SubprocessWrapper*>(wrapper));
-
   contester::proto::LocalExecutionResult response;
 
   const struct SubprocessResult * const result = Subprocess_GetResult(sub);
@@ -65,13 +64,19 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
   if (pError && pError->Size)
     response.mutable_std_err()->set_data(pError->cBuffer, pError->Size);
 
-  Subprocess_Destroy(sub);
-
   sw->rpc_->Return(&response);
-}
+
+  Subprocess_Destroy(sub);
+};
+
+void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
+  SubprocessWrapper * sw = reinterpret_cast<SubprocessWrapper*>(wrapper);
+
+  sw->rpc_->GetIoService()->post(boost::bind(ExecuteDoneBh, sub, wrapper));
+};
+
 
 void TerminateExecution(struct Subprocess * const sub, shared_ptr<Rpc> rpc) {
-  std::cout << "Rpc channel destroyed, terminating process" << std::endl;
   Subprocess_Terminate(sub);
 }
 
@@ -155,8 +160,6 @@ struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* pa
   return result;
 };
 
-
-
 void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
@@ -173,7 +176,6 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
     rpc->Return(&response);
     return;
   }
-
   rpc->SetCancelCallback(boost::bind(TerminateExecution, sub, _1));
 };
 

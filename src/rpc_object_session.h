@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/asio.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include "rpc_object.h"
@@ -22,6 +23,7 @@ class SessionRpc : public Rpc {
   virtual void SetCancelCallback(RpcMethod cancel_callback);
   virtual void Cancel(boost::shared_ptr<Rpc> rpc);
   virtual void ReturnError(const std::string& traceback);
+  virtual boost::asio::io_service * GetIoService();
 
  private:
   shared_ptr<Session> session_;

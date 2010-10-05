@@ -19,6 +19,7 @@ class SessionImpl : public Session {
   virtual void ReturnResult(SessionRpc* rpc, const std::string& result);
   virtual void ReturnError(SessionRpc* rpc, const std::string& traceback);
   virtual void ReturnResponse(SessionRpc* rpc, const std::string& response_string_b);
+  virtual boost::asio::io_service * GetIoService();
 
  private:
   Server* server_;

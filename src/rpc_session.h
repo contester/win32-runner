@@ -18,6 +18,7 @@ class Session {
   virtual void Start() = 0;
   virtual void ReturnResult(SessionRpc* rpc, const std::string& result) = 0;
   virtual void ReturnError(SessionRpc* rpc, const std::string& traceback) = 0;
+  virtual boost::asio::io_service * GetIoService() = 0;
 };
 
 class Server;

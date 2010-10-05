@@ -132,6 +132,8 @@ void SessionImpl::ReturnResponse(SessionRpc* rpc, const std::string& response_st
 void SessionImpl::ReturnResult(SessionRpc* rpc, const std::string& result) {
   ProtocolMessage message;
 
+  rpc->SetCancelCallback(NULL);
+
   message.set_sequence_number(rpc->GetMessage()->sequence_number());
   message.mutable_response()->set_message(result);
 
@@ -158,9 +160,13 @@ void SessionImpl::HandleWriteResponse(
   scoped_ptr<std::string> response_string_deleter(response_string);
   scoped_ptr<uint32_t> response_size_deleter(response_size);
 
-  if (!error) {
-    requests_.erase(sequence_number);
-  } else SelfDestruct();
+  requests_.erase(sequence_number);
+  if (error)
+    SelfDestruct();
+};
+
+boost::asio::io_service * SessionImpl::GetIoService() {
+  return &(socket_->get_io_service());
 };
 
 shared_ptr<Session> CreateTCPSession(
@@ -169,6 +175,7 @@ shared_ptr<Session> CreateTCPSession(
     boost::shared_ptr<boost::asio::ip::tcp::socket> socket) {
   return make_shared< SessionImpl, Server*, boost::uuids::uuid&, boost::shared_ptr<boost::asio::ip::tcp::socket> >(server, id, socket);
 };
+
 
 
 };

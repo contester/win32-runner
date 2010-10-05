@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include "rpc_method.h"
 
@@ -23,6 +24,7 @@ class Rpc {
   virtual void SetCancelCallback(RpcMethod cancel_callback) = 0;
   virtual void Cancel(boost::shared_ptr<Rpc> rpc) = 0;
   virtual void ReturnError(const std::string& traceback) = 0;
+  virtual boost::asio::io_service * GetIoService() = 0;
 };
 
 };
