@@ -1,5 +1,5 @@
-import "BlobProto.proto";
-import "ExecutionProto.proto";
+import "contester/proto/BlobProto.proto";
+import "contester/proto/ExecutionProto.proto";
 
 package contester.proto;
 
@@ -27,14 +27,14 @@ message LocalExecutionParameters {
   optional string command_line = 2;
   optional string current_directory = 3;
 
-  optional float time_limit = 4;
+  optional uint64 time_limit_micros = 4;
   optional uint64 memory_limit = 5;
   optional bool check_idleness = 6;
   optional LocalEnvironment environment = 7;
   optional bool restrict_ui = 8;
   optional bool no_job = 9;
   optional uint32 process_limit = 10;
-  optional float time_limit_hard = 15;
+  optional uint64 time_limit_hard_micros = 15;
 
   optional LoginInformation login_information = 11;
 

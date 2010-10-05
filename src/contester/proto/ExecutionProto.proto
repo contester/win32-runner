@@ -1,4 +1,4 @@
-import "BlobProto.proto";
+import "contester/proto/BlobProto.proto";
 
 package contester.proto;
 
@@ -23,7 +23,7 @@ message ExecutionResultFlags {
 };
 
 message ExecutionResultTime {
-  optional uint64 user_time = 1;
-  optional uint64 kernel_time = 2;
-  optional uint64 wall_time = 3;
+  optional uint64 user_time_micros = 1;
+  optional uint64 kernel_time_micros = 2;
+  optional uint64 wall_time_micros = 3;
 };

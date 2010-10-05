@@ -1,4 +1,4 @@
-#include "LocalProto.pb.h"
+#include "contester/proto/LocalProto.pb.h"
 
 #include <ctime>
 #include <iostream>
@@ -39,9 +39,9 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
   const struct SubprocessResult * const result = Subprocess_GetResult(sub);
 
   response.set_return_code(result->ExitCode);
-  response.mutable_time()->set_user_time(result->ttUser);
-  response.mutable_time()->set_kernel_time(result->ttKernel);
-  response.mutable_time()->set_wall_time(result->ttWall);
+  response.mutable_time()->set_user_time_micros(result->ttUser);
+  response.mutable_time()->set_kernel_time_micros(result->ttKernel);
+  response.mutable_time()->set_wall_time_micros(result->ttWall);
   response.set_memory(result->PeakMemory);
   response.set_total_processes(result->TotalProcesses);
   
@@ -109,10 +109,10 @@ void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionPa
   if (params->has_current_directory())
     Subprocess_SetProtoString(sub, RUNLIB_CURRENT_DIRECTORY, params->current_directory());
 
-  if (params->has_time_limit())  
-    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT, params->time_limit() * 1000);
-  if (params->has_time_limit_hard())
-    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard() * 1000);
+  if (params->has_time_limit_micros())  
+    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT, params->time_limit_micros());
+  if (params->has_time_limit_hard_micros())
+    Subprocess_SetInt(sub, RUNLIB_TIME_LIMIT_HARD, params->time_limit_hard_micros());
   if (params->has_memory_limit())
     Subprocess_SetInt(sub, RUNLIB_MEMORY_LIMIT, params->memory_limit());
   if (params->has_process_limit())

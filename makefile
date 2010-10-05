@@ -6,7 +6,7 @@ SOURCES := src/w32invoke.c src/pipes.c src/winmisc.c src/inject.c
 HEADERS := src/pipes.h src/winmisc.h src/inject.h
 EXT_HEADERS := include/w32invoke.h include/win32-gcc.h include/msstdint.h
 CXX := g++.exe
-CPPFLAGS := -pipe -Wall -g -Os -mno-cygwin -I$(BOOST)/include/boost-1_44 -I$(PROTOBUF)/include -I$(RUNLIB32)/include -D_WIN32_WINNT=0x0501
+CPPFLAGS := -pipe -Wall -g -Os -mno-cygwin -I$(BOOST)/include/boost-1_44 -I$(PROTOBUF)/include -I$(RUNLIB32)/include -D_WIN32_WINNT=0x0501 -Isrc/
 LDFLAGS := -pipe -Wall -g -Os -mno-cygwin -lws2_32 -L$(BOOST)/lib -lboost_system-mgw45-mt-1_44 -L$(PROTOBUF)/lib -lprotobuf -L$(RUNLIB32)/build -lrunlib32-static -ladvapi32 -lpsapi -luserenv -lmswsock -lrunlib32-static
 
 
@@ -39,7 +39,7 @@ build/librpc.a: build/rpc.pb.o build/rpc_object.o build/rpc_object_session.o bui
 build/main.o: src/main.cc 
 	$(CXX) $(CPPFLAGS) -c -combine -o $@ $^
 
-build/main.exe: build/main.o build/librpc.a build/LocalProto.pb.o build/BlobProto.pb.o build/ExecutionProto.pb.o
+build/main.exe: build/main.o build/librpc.a build/contester/proto/LocalProto.pb.o build/contester/proto/BlobProto.pb.o build/contester/proto/ExecutionProto.pb.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all
