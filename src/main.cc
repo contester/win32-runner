@@ -66,9 +66,12 @@ void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
 
   sw->rpc_->Return(&response);
 
+  std::cout << "Destroying " << sub << std::endl;
+
   Subprocess_Destroy(sub);
 };
 
+// Called from Subprocess handler thread.
 void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
   SubprocessWrapper * sw = reinterpret_cast<SubprocessWrapper*>(wrapper);
 
@@ -77,6 +80,7 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
 
 
 void TerminateExecution(struct Subprocess * const sub, shared_ptr<Rpc> rpc) {
+  std::cout << "Terminating " << sub << std::endl;
   Subprocess_Terminate(sub);
 }
 
