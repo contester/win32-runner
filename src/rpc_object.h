@@ -18,12 +18,20 @@ class Rpc {
  public:
   virtual ~Rpc();
 
-  virtual void Return(::google::protobuf::Message* response) = 0;
+  // Get the message
   virtual const ProtocolMessage* const GetMessage() const = 0;
   virtual const std::string& GetRequestMessage() const = 0;
-  virtual void SetCancelCallback(RpcMethod cancel_callback) = 0;
-  virtual void Cancel(boost::shared_ptr<Rpc> rpc) = 0;
+
+  // Various returns. Can be called from any thread
+  virtual void Return(::google::protobuf::Message* response) = 0;
   virtual void ReturnError(const std::string& traceback) = 0;
+
+  // Called when session is destroyed, in io_service thread
+  virtual void SetCancelCallback(RpcCallback cancel_callback) = 0;
+
+  // Called by session, in io_service thread
+  virtual void Cancel() = 0;
+
   virtual boost::asio::io_service * GetIoService() = 0;
 };
 

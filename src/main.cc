@@ -79,7 +79,7 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
 };
 
 
-void TerminateExecution(struct Subprocess * const sub, shared_ptr<Rpc> rpc) {
+void TerminateExecution(struct Subprocess * const sub) {
   std::cout << "Terminating " << sub << std::endl;
   Subprocess_Terminate(sub);
 }
@@ -180,7 +180,7 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
     rpc->Return(&response);
     return;
   }
-  rpc->SetCancelCallback(boost::bind(TerminateExecution, sub, _1));
+  rpc->SetCancelCallback(boost::bind(TerminateExecution, sub));
 };
 
 void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {

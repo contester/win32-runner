@@ -13,12 +13,12 @@ SessionRpc::SessionRpc(shared_ptr<Session> session, ProtocolMessage* message)
 SessionRpc::~SessionRpc() {};
 
 void SessionRpc::Return(::google::protobuf::Message* response) {
-  cancel_callback_ = NULL;
+  SetCancelCallback(NULL);
   session_->ReturnResult(this, response->SerializeAsString());
 };
 
 void SessionRpc::ReturnError(const std::string& traceback) {
-  cancel_callback_ = NULL;
+  SetCancelCallback(NULL);
   session_->ReturnError(this, traceback);
 };
 
@@ -30,12 +30,20 @@ const std::string& SessionRpc::GetRequestMessage() const {
   return message_->request().message();
 };
 
-void SessionRpc::SetCancelCallback(RpcMethod cancel_callback) {
+void SessionRpc::SetCancelCallback(RpcCallback cancel_callback) {
+  mutex_.lock();
   cancel_callback_ = cancel_callback;
+  mutex_.unlock();
 };
 
-void SessionRpc::Cancel(shared_ptr<Rpc> rpc) {
-  cancel_callback_(rpc);
+void SessionRpc::Cancel() {
+  mutex_.lock();
+  if (cancel_callback_) {
+    const RpcCallback cancel_callback_t_ = cancel_callback_;
+    cancel_callback_ = NULL;
+    cancel_callback_t();
+  } 
+  mutex_.unlock();
 };
 
 boost::asio::io_service * SessionRpc::GetIoService() {

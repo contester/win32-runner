@@ -132,8 +132,6 @@ void SessionImpl::ReturnResponse(SessionRpc* rpc, const std::string& response_st
 void SessionImpl::ReturnResult(SessionRpc* rpc, const std::string& result) {
   ProtocolMessage message;
 
-  rpc->SetCancelCallback(NULL);
-
   message.set_sequence_number(rpc->GetMessage()->sequence_number());
   message.mutable_response()->set_message(result);
 
