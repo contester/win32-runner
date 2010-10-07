@@ -52,7 +52,7 @@ void SessionImpl::SelfDestruct() {
   socket_->close();
 
   for (boost::unordered_map<int, boost::shared_ptr<SessionRpc> >::iterator i = requests_.begin(); i != requests_.end(); ++i) {
-    i->second->Cancel(i->second);
+    i->second->Cancel();
   }
   
   requests_.clear();
@@ -173,7 +173,5 @@ shared_ptr<Session> CreateTCPSession(
     boost::shared_ptr<boost::asio::ip::tcp::socket> socket) {
   return make_shared< SessionImpl, Server*, boost::uuids::uuid&, boost::shared_ptr<boost::asio::ip::tcp::socket> >(server, id, socket);
 };
-
-
 
 };

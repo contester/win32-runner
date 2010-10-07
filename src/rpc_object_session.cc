@@ -39,9 +39,9 @@ void SessionRpc::SetCancelCallback(RpcCallback cancel_callback) {
 void SessionRpc::Cancel() {
   mutex_.lock();
   if (cancel_callback_) {
-    const RpcCallback cancel_callback_t_ = cancel_callback_;
+    const RpcCallback cancel_callback_t_(cancel_callback_);
     cancel_callback_ = NULL;
-    cancel_callback_t();
+    cancel_callback_t_();
   } 
   mutex_.unlock();
 };
