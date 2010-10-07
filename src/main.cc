@@ -8,6 +8,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "rpc_object.h"
 #include "rpc_server.h"
@@ -164,6 +165,19 @@ struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* pa
   return result;
 };
 
+void SubprocessStartThread(struct Subprocess * const sub, SubprocessWrapper * sw) {
+  Subprocess_SetCallback(sub, ExecuteDone, sw);
+
+  if (!Subprocess_Start(sub)) {
+    Subprocess_Destroy(sub);
+    contester::proto::LocalExecutionResult response;
+    sw->rpc_->Return(&response);
+    delete sw;
+  } else {
+    sw->rpc_->SetCancelCallback(boost::bind(TerminateExecution, sub));
+  } 
+};
+
 void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
@@ -171,16 +185,7 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
   struct Subprocess * const sub = Subprocess_CreateAndFill(&request, local_environment);
   SubprocessWrapper* sw = new SubprocessWrapper(rpc);
 
-  Subprocess_SetCallback(sub, ExecuteDone, sw);
-
-  if (!Subprocess_Start(sub)) {
-    delete sw;
-    Subprocess_Destroy(sub);
-    contester::proto::LocalExecutionResult response;
-    rpc->Return(&response);
-    return;
-  }
-  rpc->SetCancelCallback(boost::bind(TerminateExecution, sub));
+  boost::thread(SubprocessStartThread, sub, sw);
 };
 
 void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {
