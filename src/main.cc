@@ -5,6 +5,7 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -33,6 +34,8 @@ class SubprocessWrapper {
 };
 
 void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +ExecuteDoneBh" << std::endl;
+
   scoped_ptr<SubprocessWrapper> sw(reinterpret_cast<SubprocessWrapper*>(wrapper));
   contester::proto::LocalExecutionResult response;
 
@@ -67,9 +70,8 @@ void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
 
   sw->rpc_->Return(&response);
 
-  std::cout << "Destroying " << sub << std::endl;
-
   Subprocess_Destroy(sub);
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -ExecuteDoneBh" << std::endl;
 };
 
 // Called from Subprocess handler thread.
@@ -81,8 +83,9 @@ void ExecuteDone(struct Subprocess* const sub, void* wrapper) {
 
 
 void TerminateExecution(struct Subprocess * const sub) {
-  std::cout << "Terminating " << sub << std::endl;
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +TerminateExecution" << std::endl;
   Subprocess_Terminate(sub);
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -TerminateExecution" << std::endl;
 }
 
 void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnvironment * const local_environment, const proto::LocalEnvironment* const environment) {
@@ -179,6 +182,8 @@ void SubprocessStartThread(struct Subprocess * const sub, SubprocessWrapper * sw
 };
 
 void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +LocalExecute" << std::endl;
+
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
 
@@ -186,6 +191,8 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
   SubprocessWrapper* sw = new SubprocessWrapper(rpc);
 
   boost::thread(SubprocessStartThread, sub, sw);
+
+  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -LocalExecute" << std::endl;
 };
 
 void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {
