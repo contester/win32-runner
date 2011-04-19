@@ -2,6 +2,9 @@
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
 #include "contester/proto/LocalProto.pb.h"
+
+#include <algorithm>
+
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -271,8 +274,6 @@ struct StaticDescriptorInitializer_contester_2fproto_2fLocalProto_2eproto {
 
 // ===================================================================
 
-const ::std::string LocalEnvironment_Variable::_default_name_;
-const ::std::string LocalEnvironment_Variable::_default_value_;
 #ifndef _MSC_VER
 const int LocalEnvironment_Variable::kNameFieldNumber;
 const int LocalEnvironment_Variable::kValueFieldNumber;
@@ -295,8 +296,8 @@ LocalEnvironment_Variable::LocalEnvironment_Variable(const LocalEnvironment_Vari
 
 void LocalEnvironment_Variable::SharedCtor() {
   _cached_size_ = 0;
-  name_ = const_cast< ::std::string*>(&_default_name_);
-  value_ = const_cast< ::std::string*>(&_default_value_);
+  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  value_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   expand_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -306,10 +307,10 @@ LocalEnvironment_Variable::~LocalEnvironment_Variable() {
 }
 
 void LocalEnvironment_Variable::SharedDtor() {
-  if (name_ != &_default_name_) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
     delete name_;
   }
-  if (value_ != &_default_value_) {
+  if (value_ != &::google::protobuf::internal::kEmptyString) {
     delete value_;
   }
   if (this != default_instance_) {
@@ -338,13 +339,13 @@ LocalEnvironment_Variable* LocalEnvironment_Variable::New() const {
 
 void LocalEnvironment_Variable::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (name_ != &_default_name_) {
+    if (has_name()) {
+      if (name_ != &::google::protobuf::internal::kEmptyString) {
         name_->clear();
       }
     }
-    if (_has_bit(1)) {
-      if (value_ != &_default_value_) {
+    if (has_value()) {
+      if (value_ != &::google::protobuf::internal::kEmptyString) {
         value_->clear();
       }
     }
@@ -401,7 +402,7 @@ bool LocalEnvironment_Variable::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &expand_)));
-          _set_bit(2);
+          set_has_expand();
         } else {
           goto handle_uninterpreted;
         }
@@ -428,7 +429,7 @@ bool LocalEnvironment_Variable::MergePartialFromCodedStream(
 void LocalEnvironment_Variable::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required string name = 1;
-  if (_has_bit(0)) {
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -437,7 +438,7 @@ void LocalEnvironment_Variable::SerializeWithCachedSizes(
   }
   
   // optional string value = 2;
-  if (_has_bit(1)) {
+  if (has_value()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->value().data(), this->value().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -446,7 +447,7 @@ void LocalEnvironment_Variable::SerializeWithCachedSizes(
   }
   
   // optional bool expand = 3;
-  if (_has_bit(2)) {
+  if (has_expand()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->expand(), output);
   }
   
@@ -459,7 +460,7 @@ void LocalEnvironment_Variable::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LocalEnvironment_Variable::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required string name = 1;
-  if (_has_bit(0)) {
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -469,7 +470,7 @@ void LocalEnvironment_Variable::SerializeWithCachedSizes(
   }
   
   // optional string value = 2;
-  if (_has_bit(1)) {
+  if (has_value()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->value().data(), this->value().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -479,7 +480,7 @@ void LocalEnvironment_Variable::SerializeWithCachedSizes(
   }
   
   // optional bool expand = 3;
-  if (_has_bit(2)) {
+  if (has_expand()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->expand(), target);
   }
   
@@ -540,13 +541,13 @@ void LocalEnvironment_Variable::MergeFrom(const ::google::protobuf::Message& fro
 void LocalEnvironment_Variable::MergeFrom(const LocalEnvironment_Variable& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_name()) {
       set_name(from.name());
     }
-    if (from._has_bit(1)) {
+    if (from.has_value()) {
       set_value(from.value());
     }
-    if (from._has_bit(2)) {
+    if (from.has_expand()) {
       set_expand(from.expand());
     }
   }
@@ -669,7 +670,7 @@ bool LocalEnvironment::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &empty_)));
-          _set_bit(0);
+          set_has_empty();
         } else {
           goto handle_uninterpreted;
         }
@@ -711,7 +712,7 @@ bool LocalEnvironment::MergePartialFromCodedStream(
 void LocalEnvironment::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional bool empty = 1;
-  if (_has_bit(0)) {
+  if (has_empty()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->empty(), output);
   }
   
@@ -730,7 +731,7 @@ void LocalEnvironment::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LocalEnvironment::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional bool empty = 1;
-  if (_has_bit(0)) {
+  if (has_empty()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->empty(), target);
   }
   
@@ -793,7 +794,7 @@ void LocalEnvironment::MergeFrom(const LocalEnvironment& from) {
   GOOGLE_CHECK_NE(&from, this);
   variable_.MergeFrom(from.variable_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_empty()) {
       set_empty(from.empty());
     }
   }
@@ -841,9 +842,6 @@ void LocalEnvironment::Swap(LocalEnvironment* other) {
 
 // ===================================================================
 
-const ::std::string LoginInformation::_default_username_;
-const ::std::string LoginInformation::_default_password_;
-const ::std::string LoginInformation::_default_domain_;
 #ifndef _MSC_VER
 const int LoginInformation::kUsernameFieldNumber;
 const int LoginInformation::kPasswordFieldNumber;
@@ -866,9 +864,9 @@ LoginInformation::LoginInformation(const LoginInformation& from)
 
 void LoginInformation::SharedCtor() {
   _cached_size_ = 0;
-  username_ = const_cast< ::std::string*>(&_default_username_);
-  password_ = const_cast< ::std::string*>(&_default_password_);
-  domain_ = const_cast< ::std::string*>(&_default_domain_);
+  username_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  domain_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -877,13 +875,13 @@ LoginInformation::~LoginInformation() {
 }
 
 void LoginInformation::SharedDtor() {
-  if (username_ != &_default_username_) {
+  if (username_ != &::google::protobuf::internal::kEmptyString) {
     delete username_;
   }
-  if (password_ != &_default_password_) {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
     delete password_;
   }
-  if (domain_ != &_default_domain_) {
+  if (domain_ != &::google::protobuf::internal::kEmptyString) {
     delete domain_;
   }
   if (this != default_instance_) {
@@ -912,18 +910,18 @@ LoginInformation* LoginInformation::New() const {
 
 void LoginInformation::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (username_ != &_default_username_) {
+    if (has_username()) {
+      if (username_ != &::google::protobuf::internal::kEmptyString) {
         username_->clear();
       }
     }
-    if (_has_bit(1)) {
-      if (password_ != &_default_password_) {
+    if (has_password()) {
+      if (password_ != &::google::protobuf::internal::kEmptyString) {
         password_->clear();
       }
     }
-    if (_has_bit(2)) {
-      if (domain_ != &_default_domain_) {
+    if (has_domain()) {
+      if (domain_ != &::google::protobuf::internal::kEmptyString) {
         domain_->clear();
       }
     }
@@ -1007,7 +1005,7 @@ bool LoginInformation::MergePartialFromCodedStream(
 void LoginInformation::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required string username = 1;
-  if (_has_bit(0)) {
+  if (has_username()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->username().data(), this->username().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1016,7 +1014,7 @@ void LoginInformation::SerializeWithCachedSizes(
   }
   
   // required string password = 2;
-  if (_has_bit(1)) {
+  if (has_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->password().data(), this->password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1025,7 +1023,7 @@ void LoginInformation::SerializeWithCachedSizes(
   }
   
   // optional string domain = 3;
-  if (_has_bit(2)) {
+  if (has_domain()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->domain().data(), this->domain().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1042,7 +1040,7 @@ void LoginInformation::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LoginInformation::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required string username = 1;
-  if (_has_bit(0)) {
+  if (has_username()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->username().data(), this->username().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1052,7 +1050,7 @@ void LoginInformation::SerializeWithCachedSizes(
   }
   
   // required string password = 2;
-  if (_has_bit(1)) {
+  if (has_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->password().data(), this->password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1062,7 +1060,7 @@ void LoginInformation::SerializeWithCachedSizes(
   }
   
   // optional string domain = 3;
-  if (_has_bit(2)) {
+  if (has_domain()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->domain().data(), this->domain().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1130,13 +1128,13 @@ void LoginInformation::MergeFrom(const ::google::protobuf::Message& from) {
 void LoginInformation::MergeFrom(const LoginInformation& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_username()) {
       set_username(from.username());
     }
-    if (from._has_bit(1)) {
+    if (from.has_password()) {
       set_password(from.password());
     }
-    if (from._has_bit(2)) {
+    if (from.has_domain()) {
       set_domain(from.domain());
     }
   }
@@ -1183,9 +1181,6 @@ void LoginInformation::Swap(LoginInformation* other) {
 
 // ===================================================================
 
-const ::std::string LocalExecutionParameters::_default_application_name_;
-const ::std::string LocalExecutionParameters::_default_command_line_;
-const ::std::string LocalExecutionParameters::_default_current_directory_;
 #ifndef _MSC_VER
 const int LocalExecutionParameters::kApplicationNameFieldNumber;
 const int LocalExecutionParameters::kCommandLineFieldNumber;
@@ -1225,9 +1220,9 @@ LocalExecutionParameters::LocalExecutionParameters(const LocalExecutionParameter
 
 void LocalExecutionParameters::SharedCtor() {
   _cached_size_ = 0;
-  application_name_ = const_cast< ::std::string*>(&_default_application_name_);
-  command_line_ = const_cast< ::std::string*>(&_default_command_line_);
-  current_directory_ = const_cast< ::std::string*>(&_default_current_directory_);
+  application_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  command_line_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  current_directory_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   time_limit_micros_ = GOOGLE_ULONGLONG(0);
   memory_limit_ = GOOGLE_ULONGLONG(0);
   check_idleness_ = false;
@@ -1248,13 +1243,13 @@ LocalExecutionParameters::~LocalExecutionParameters() {
 }
 
 void LocalExecutionParameters::SharedDtor() {
-  if (application_name_ != &_default_application_name_) {
+  if (application_name_ != &::google::protobuf::internal::kEmptyString) {
     delete application_name_;
   }
-  if (command_line_ != &_default_command_line_) {
+  if (command_line_ != &::google::protobuf::internal::kEmptyString) {
     delete command_line_;
   }
-  if (current_directory_ != &_default_current_directory_) {
+  if (current_directory_ != &::google::protobuf::internal::kEmptyString) {
     delete current_directory_;
   }
   if (this != default_instance_) {
@@ -1288,25 +1283,25 @@ LocalExecutionParameters* LocalExecutionParameters::New() const {
 
 void LocalExecutionParameters::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (application_name_ != &_default_application_name_) {
+    if (has_application_name()) {
+      if (application_name_ != &::google::protobuf::internal::kEmptyString) {
         application_name_->clear();
       }
     }
-    if (_has_bit(1)) {
-      if (command_line_ != &_default_command_line_) {
+    if (has_command_line()) {
+      if (command_line_ != &::google::protobuf::internal::kEmptyString) {
         command_line_->clear();
       }
     }
-    if (_has_bit(2)) {
-      if (current_directory_ != &_default_current_directory_) {
+    if (has_current_directory()) {
+      if (current_directory_ != &::google::protobuf::internal::kEmptyString) {
         current_directory_->clear();
       }
     }
     time_limit_micros_ = GOOGLE_ULONGLONG(0);
     memory_limit_ = GOOGLE_ULONGLONG(0);
     check_idleness_ = false;
-    if (_has_bit(6)) {
+    if (has_environment()) {
       if (environment_ != NULL) environment_->::contester::proto::LocalEnvironment::Clear();
     }
     restrict_ui_ = false;
@@ -1315,16 +1310,16 @@ void LocalExecutionParameters::Clear() {
     no_job_ = false;
     process_limit_ = 0u;
     time_limit_hard_micros_ = GOOGLE_ULONGLONG(0);
-    if (_has_bit(11)) {
+    if (has_login_information()) {
       if (login_information_ != NULL) login_information_->::contester::proto::LoginInformation::Clear();
     }
-    if (_has_bit(12)) {
+    if (has_std_in()) {
       if (std_in_ != NULL) std_in_->::contester::proto::RedirectParameters::Clear();
     }
-    if (_has_bit(13)) {
+    if (has_std_out()) {
       if (std_out_ != NULL) std_out_->::contester::proto::RedirectParameters::Clear();
     }
-    if (_has_bit(14)) {
+    if (has_std_err()) {
       if (std_err_ != NULL) std_err_->::contester::proto::RedirectParameters::Clear();
     }
   }
@@ -1396,7 +1391,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &time_limit_micros_)));
-          _set_bit(3);
+          set_has_time_limit_micros();
         } else {
           goto handle_uninterpreted;
         }
@@ -1412,7 +1407,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &memory_limit_)));
-          _set_bit(4);
+          set_has_memory_limit();
         } else {
           goto handle_uninterpreted;
         }
@@ -1428,7 +1423,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &check_idleness_)));
-          _set_bit(5);
+          set_has_check_idleness();
         } else {
           goto handle_uninterpreted;
         }
@@ -1458,7 +1453,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &restrict_ui_)));
-          _set_bit(7);
+          set_has_restrict_ui();
         } else {
           goto handle_uninterpreted;
         }
@@ -1474,7 +1469,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &no_job_)));
-          _set_bit(8);
+          set_has_no_job();
         } else {
           goto handle_uninterpreted;
         }
@@ -1490,7 +1485,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &process_limit_)));
-          _set_bit(9);
+          set_has_process_limit();
         } else {
           goto handle_uninterpreted;
         }
@@ -1562,7 +1557,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &time_limit_hard_micros_)));
-          _set_bit(10);
+          set_has_time_limit_hard_micros();
         } else {
           goto handle_uninterpreted;
         }
@@ -1589,7 +1584,7 @@ bool LocalExecutionParameters::MergePartialFromCodedStream(
 void LocalExecutionParameters::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional string application_name = 1;
-  if (_has_bit(0)) {
+  if (has_application_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->application_name().data(), this->application_name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1598,7 +1593,7 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional string command_line = 2;
-  if (_has_bit(1)) {
+  if (has_command_line()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->command_line().data(), this->command_line().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1607,7 +1602,7 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional string current_directory = 3;
-  if (_has_bit(2)) {
+  if (has_current_directory()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->current_directory().data(), this->current_directory().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1616,67 +1611,67 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional uint64 time_limit_micros = 4;
-  if (_has_bit(3)) {
+  if (has_time_limit_micros()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->time_limit_micros(), output);
   }
   
   // optional uint64 memory_limit = 5;
-  if (_has_bit(4)) {
+  if (has_memory_limit()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(5, this->memory_limit(), output);
   }
   
   // optional bool check_idleness = 6;
-  if (_has_bit(5)) {
+  if (has_check_idleness()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(6, this->check_idleness(), output);
   }
   
   // optional .contester.proto.LocalEnvironment environment = 7;
-  if (_has_bit(6)) {
+  if (has_environment()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       7, this->environment(), output);
   }
   
   // optional bool restrict_ui = 8;
-  if (_has_bit(7)) {
+  if (has_restrict_ui()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(8, this->restrict_ui(), output);
   }
   
   // optional bool no_job = 9;
-  if (_has_bit(8)) {
+  if (has_no_job()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(9, this->no_job(), output);
   }
   
   // optional uint32 process_limit = 10;
-  if (_has_bit(9)) {
+  if (has_process_limit()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(10, this->process_limit(), output);
   }
   
   // optional .contester.proto.LoginInformation login_information = 11;
-  if (_has_bit(11)) {
+  if (has_login_information()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       11, this->login_information(), output);
   }
   
   // optional .contester.proto.RedirectParameters std_in = 12;
-  if (_has_bit(12)) {
+  if (has_std_in()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       12, this->std_in(), output);
   }
   
   // optional .contester.proto.RedirectParameters std_out = 13;
-  if (_has_bit(13)) {
+  if (has_std_out()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       13, this->std_out(), output);
   }
   
   // optional .contester.proto.RedirectParameters std_err = 14;
-  if (_has_bit(14)) {
+  if (has_std_err()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       14, this->std_err(), output);
   }
   
   // optional uint64 time_limit_hard_micros = 15;
-  if (_has_bit(10)) {
+  if (has_time_limit_hard_micros()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(15, this->time_limit_hard_micros(), output);
   }
   
@@ -1689,7 +1684,7 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LocalExecutionParameters::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional string application_name = 1;
-  if (_has_bit(0)) {
+  if (has_application_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->application_name().data(), this->application_name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1699,7 +1694,7 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional string command_line = 2;
-  if (_has_bit(1)) {
+  if (has_command_line()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->command_line().data(), this->command_line().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1709,7 +1704,7 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional string current_directory = 3;
-  if (_has_bit(2)) {
+  if (has_current_directory()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->current_directory().data(), this->current_directory().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1719,72 +1714,72 @@ void LocalExecutionParameters::SerializeWithCachedSizes(
   }
   
   // optional uint64 time_limit_micros = 4;
-  if (_has_bit(3)) {
+  if (has_time_limit_micros()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->time_limit_micros(), target);
   }
   
   // optional uint64 memory_limit = 5;
-  if (_has_bit(4)) {
+  if (has_memory_limit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(5, this->memory_limit(), target);
   }
   
   // optional bool check_idleness = 6;
-  if (_has_bit(5)) {
+  if (has_check_idleness()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(6, this->check_idleness(), target);
   }
   
   // optional .contester.proto.LocalEnvironment environment = 7;
-  if (_has_bit(6)) {
+  if (has_environment()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         7, this->environment(), target);
   }
   
   // optional bool restrict_ui = 8;
-  if (_has_bit(7)) {
+  if (has_restrict_ui()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(8, this->restrict_ui(), target);
   }
   
   // optional bool no_job = 9;
-  if (_has_bit(8)) {
+  if (has_no_job()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(9, this->no_job(), target);
   }
   
   // optional uint32 process_limit = 10;
-  if (_has_bit(9)) {
+  if (has_process_limit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(10, this->process_limit(), target);
   }
   
   // optional .contester.proto.LoginInformation login_information = 11;
-  if (_has_bit(11)) {
+  if (has_login_information()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         11, this->login_information(), target);
   }
   
   // optional .contester.proto.RedirectParameters std_in = 12;
-  if (_has_bit(12)) {
+  if (has_std_in()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         12, this->std_in(), target);
   }
   
   // optional .contester.proto.RedirectParameters std_out = 13;
-  if (_has_bit(13)) {
+  if (has_std_out()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         13, this->std_out(), target);
   }
   
   // optional .contester.proto.RedirectParameters std_err = 14;
-  if (_has_bit(14)) {
+  if (has_std_err()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         14, this->std_err(), target);
   }
   
   // optional uint64 time_limit_hard_micros = 15;
-  if (_has_bit(10)) {
+  if (has_time_limit_hard_micros()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(15, this->time_limit_hard_micros(), target);
   }
   
@@ -1927,51 +1922,51 @@ void LocalExecutionParameters::MergeFrom(const ::google::protobuf::Message& from
 void LocalExecutionParameters::MergeFrom(const LocalExecutionParameters& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_application_name()) {
       set_application_name(from.application_name());
     }
-    if (from._has_bit(1)) {
+    if (from.has_command_line()) {
       set_command_line(from.command_line());
     }
-    if (from._has_bit(2)) {
+    if (from.has_current_directory()) {
       set_current_directory(from.current_directory());
     }
-    if (from._has_bit(3)) {
+    if (from.has_time_limit_micros()) {
       set_time_limit_micros(from.time_limit_micros());
     }
-    if (from._has_bit(4)) {
+    if (from.has_memory_limit()) {
       set_memory_limit(from.memory_limit());
     }
-    if (from._has_bit(5)) {
+    if (from.has_check_idleness()) {
       set_check_idleness(from.check_idleness());
     }
-    if (from._has_bit(6)) {
+    if (from.has_environment()) {
       mutable_environment()->::contester::proto::LocalEnvironment::MergeFrom(from.environment());
     }
-    if (from._has_bit(7)) {
+    if (from.has_restrict_ui()) {
       set_restrict_ui(from.restrict_ui());
     }
   }
   if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (from._has_bit(8)) {
+    if (from.has_no_job()) {
       set_no_job(from.no_job());
     }
-    if (from._has_bit(9)) {
+    if (from.has_process_limit()) {
       set_process_limit(from.process_limit());
     }
-    if (from._has_bit(10)) {
+    if (from.has_time_limit_hard_micros()) {
       set_time_limit_hard_micros(from.time_limit_hard_micros());
     }
-    if (from._has_bit(11)) {
+    if (from.has_login_information()) {
       mutable_login_information()->::contester::proto::LoginInformation::MergeFrom(from.login_information());
     }
-    if (from._has_bit(12)) {
+    if (from.has_std_in()) {
       mutable_std_in()->::contester::proto::RedirectParameters::MergeFrom(from.std_in());
     }
-    if (from._has_bit(13)) {
+    if (from.has_std_out()) {
       mutable_std_out()->::contester::proto::RedirectParameters::MergeFrom(from.std_out());
     }
-    if (from._has_bit(14)) {
+    if (from.has_std_err()) {
       mutable_std_err()->::contester::proto::RedirectParameters::MergeFrom(from.std_err());
     }
   }
@@ -2110,18 +2105,18 @@ LocalExecutionResult* LocalExecutionResult::New() const {
 
 void LocalExecutionResult::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
+    if (has_flags()) {
       if (flags_ != NULL) flags_->::contester::proto::ExecutionResultFlags::Clear();
     }
-    if (_has_bit(1)) {
+    if (has_time()) {
       if (time_ != NULL) time_->::contester::proto::ExecutionResultTime::Clear();
     }
     memory_ = GOOGLE_ULONGLONG(0);
     return_code_ = 0u;
-    if (_has_bit(4)) {
+    if (has_std_out()) {
       if (std_out_ != NULL) std_out_->::contester::proto::Blob::Clear();
     }
-    if (_has_bit(5)) {
+    if (has_std_err()) {
       if (std_err_ != NULL) std_err_->::contester::proto::Blob::Clear();
     }
     total_processes_ = GOOGLE_ULONGLONG(0);
@@ -2171,7 +2166,7 @@ bool LocalExecutionResult::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &memory_)));
-          _set_bit(2);
+          set_has_memory();
         } else {
           goto handle_uninterpreted;
         }
@@ -2187,7 +2182,7 @@ bool LocalExecutionResult::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &return_code_)));
-          _set_bit(3);
+          set_has_return_code();
         } else {
           goto handle_uninterpreted;
         }
@@ -2231,7 +2226,7 @@ bool LocalExecutionResult::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &total_processes_)));
-          _set_bit(6);
+          set_has_total_processes();
         } else {
           goto handle_uninterpreted;
         }
@@ -2258,41 +2253,41 @@ bool LocalExecutionResult::MergePartialFromCodedStream(
 void LocalExecutionResult::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional .contester.proto.ExecutionResultFlags flags = 1;
-  if (_has_bit(0)) {
+  if (has_flags()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->flags(), output);
   }
   
   // optional .contester.proto.ExecutionResultTime time = 2;
-  if (_has_bit(1)) {
+  if (has_time()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->time(), output);
   }
   
   // optional uint64 memory = 3;
-  if (_has_bit(2)) {
+  if (has_memory()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->memory(), output);
   }
   
   // optional uint32 return_code = 4;
-  if (_has_bit(3)) {
+  if (has_return_code()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->return_code(), output);
   }
   
   // optional .contester.proto.Blob std_out = 5;
-  if (_has_bit(4)) {
+  if (has_std_out()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       5, this->std_out(), output);
   }
   
   // optional .contester.proto.Blob std_err = 6;
-  if (_has_bit(5)) {
+  if (has_std_err()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       6, this->std_err(), output);
   }
   
   // optional uint64 total_processes = 7;
-  if (_has_bit(6)) {
+  if (has_total_processes()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(7, this->total_processes(), output);
   }
   
@@ -2305,45 +2300,45 @@ void LocalExecutionResult::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LocalExecutionResult::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional .contester.proto.ExecutionResultFlags flags = 1;
-  if (_has_bit(0)) {
+  if (has_flags()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         1, this->flags(), target);
   }
   
   // optional .contester.proto.ExecutionResultTime time = 2;
-  if (_has_bit(1)) {
+  if (has_time()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->time(), target);
   }
   
   // optional uint64 memory = 3;
-  if (_has_bit(2)) {
+  if (has_memory()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->memory(), target);
   }
   
   // optional uint32 return_code = 4;
-  if (_has_bit(3)) {
+  if (has_return_code()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->return_code(), target);
   }
   
   // optional .contester.proto.Blob std_out = 5;
-  if (_has_bit(4)) {
+  if (has_std_out()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         5, this->std_out(), target);
   }
   
   // optional .contester.proto.Blob std_err = 6;
-  if (_has_bit(5)) {
+  if (has_std_err()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         6, this->std_err(), target);
   }
   
   // optional uint64 total_processes = 7;
-  if (_has_bit(6)) {
+  if (has_total_processes()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(7, this->total_processes(), target);
   }
   
@@ -2434,25 +2429,25 @@ void LocalExecutionResult::MergeFrom(const ::google::protobuf::Message& from) {
 void LocalExecutionResult::MergeFrom(const LocalExecutionResult& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_flags()) {
       mutable_flags()->::contester::proto::ExecutionResultFlags::MergeFrom(from.flags());
     }
-    if (from._has_bit(1)) {
+    if (from.has_time()) {
       mutable_time()->::contester::proto::ExecutionResultTime::MergeFrom(from.time());
     }
-    if (from._has_bit(2)) {
+    if (from.has_memory()) {
       set_memory(from.memory());
     }
-    if (from._has_bit(3)) {
+    if (from.has_return_code()) {
       set_return_code(from.return_code());
     }
-    if (from._has_bit(4)) {
+    if (from.has_std_out()) {
       mutable_std_out()->::contester::proto::Blob::MergeFrom(from.std_out());
     }
-    if (from._has_bit(5)) {
+    if (from.has_std_err()) {
       mutable_std_err()->::contester::proto::Blob::MergeFrom(from.std_err());
     }
-    if (from._has_bit(6)) {
+    if (from.has_total_processes()) {
       set_total_processes(from.total_processes());
     }
   }
@@ -2563,10 +2558,10 @@ LocalExecution* LocalExecution::New() const {
 
 void LocalExecution::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
+    if (has_parameters()) {
       if (parameters_ != NULL) parameters_->::contester::proto::LocalExecutionParameters::Clear();
     }
-    if (_has_bit(1)) {
+    if (has_result()) {
       if (result_ != NULL) result_->::contester::proto::LocalExecutionResult::Clear();
     }
   }
@@ -2626,13 +2621,13 @@ bool LocalExecution::MergePartialFromCodedStream(
 void LocalExecution::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required .contester.proto.LocalExecutionParameters parameters = 1;
-  if (_has_bit(0)) {
+  if (has_parameters()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->parameters(), output);
   }
   
   // optional .contester.proto.LocalExecutionResult result = 2;
-  if (_has_bit(1)) {
+  if (has_result()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->result(), output);
   }
@@ -2646,14 +2641,14 @@ void LocalExecution::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LocalExecution::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required .contester.proto.LocalExecutionParameters parameters = 1;
-  if (_has_bit(0)) {
+  if (has_parameters()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         1, this->parameters(), target);
   }
   
   // optional .contester.proto.LocalExecutionResult result = 2;
-  if (_has_bit(1)) {
+  if (has_result()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->result(), target);
@@ -2711,10 +2706,10 @@ void LocalExecution::MergeFrom(const ::google::protobuf::Message& from) {
 void LocalExecution::MergeFrom(const LocalExecution& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_parameters()) {
       mutable_parameters()->::contester::proto::LocalExecutionParameters::MergeFrom(from.parameters());
     }
-    if (from._has_bit(1)) {
+    if (from.has_result()) {
       mutable_result()->::contester::proto::LocalExecutionResult::MergeFrom(from.result());
     }
   }

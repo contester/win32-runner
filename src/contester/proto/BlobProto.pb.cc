@@ -2,6 +2,9 @@
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
 #include "contester/proto/BlobProto.pb.h"
+
+#include <algorithm>
+
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -274,7 +277,7 @@ bool Blob_CompressionInfo::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &original_size_)));
-          _set_bit(1);
+          set_has_original_size();
         } else {
           goto handle_uninterpreted;
         }
@@ -301,13 +304,13 @@ bool Blob_CompressionInfo::MergePartialFromCodedStream(
 void Blob_CompressionInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional .contester.proto.Blob.CompressionInfo.CompressionType method = 1;
-  if (_has_bit(0)) {
+  if (has_method()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->method(), output);
   }
   
   // optional uint32 original_size = 2;
-  if (_has_bit(1)) {
+  if (has_original_size()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->original_size(), output);
   }
   
@@ -320,13 +323,13 @@ void Blob_CompressionInfo::SerializeWithCachedSizes(
 ::google::protobuf::uint8* Blob_CompressionInfo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional .contester.proto.Blob.CompressionInfo.CompressionType method = 1;
-  if (_has_bit(0)) {
+  if (has_method()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->method(), target);
   }
   
   // optional uint32 original_size = 2;
-  if (_has_bit(1)) {
+  if (has_original_size()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->original_size(), target);
   }
   
@@ -381,10 +384,10 @@ void Blob_CompressionInfo::MergeFrom(const ::google::protobuf::Message& from) {
 void Blob_CompressionInfo::MergeFrom(const Blob_CompressionInfo& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_method()) {
       set_method(from.method());
     }
-    if (from._has_bit(1)) {
+    if (from.has_original_size()) {
       set_original_size(from.original_size());
     }
   }
@@ -429,8 +432,6 @@ void Blob_CompressionInfo::Swap(Blob_CompressionInfo* other) {
 
 // -------------------------------------------------------------------
 
-const ::std::string Blob::_default_data_;
-const ::std::string Blob::_default_sha1_;
 #ifndef _MSC_VER
 const int Blob::kDataFieldNumber;
 const int Blob::kCompressionFieldNumber;
@@ -454,9 +455,9 @@ Blob::Blob(const Blob& from)
 
 void Blob::SharedCtor() {
   _cached_size_ = 0;
-  data_ = const_cast< ::std::string*>(&_default_data_);
+  data_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   compression_ = NULL;
-  sha1_ = const_cast< ::std::string*>(&_default_sha1_);
+  sha1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -465,10 +466,10 @@ Blob::~Blob() {
 }
 
 void Blob::SharedDtor() {
-  if (data_ != &_default_data_) {
+  if (data_ != &::google::protobuf::internal::kEmptyString) {
     delete data_;
   }
-  if (sha1_ != &_default_sha1_) {
+  if (sha1_ != &::google::protobuf::internal::kEmptyString) {
     delete sha1_;
   }
   if (this != default_instance_) {
@@ -498,16 +499,16 @@ Blob* Blob::New() const {
 
 void Blob::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (data_ != &_default_data_) {
+    if (has_data()) {
+      if (data_ != &::google::protobuf::internal::kEmptyString) {
         data_->clear();
       }
     }
-    if (_has_bit(1)) {
+    if (has_compression()) {
       if (compression_ != NULL) compression_->::contester::proto::Blob_CompressionInfo::Clear();
     }
-    if (_has_bit(2)) {
-      if (sha1_ != &_default_sha1_) {
+    if (has_sha1()) {
+      if (sha1_ != &::google::protobuf::internal::kEmptyString) {
         sha1_->clear();
       }
     }
@@ -582,19 +583,19 @@ bool Blob::MergePartialFromCodedStream(
 void Blob::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional bytes data = 1;
-  if (_has_bit(0)) {
+  if (has_data()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       1, this->data(), output);
   }
   
   // optional .contester.proto.Blob.CompressionInfo compression = 2;
-  if (_has_bit(1)) {
+  if (has_compression()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->compression(), output);
   }
   
   // optional bytes sha1 = 3;
-  if (_has_bit(2)) {
+  if (has_sha1()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       3, this->sha1(), output);
   }
@@ -608,21 +609,21 @@ void Blob::SerializeWithCachedSizes(
 ::google::protobuf::uint8* Blob::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional bytes data = 1;
-  if (_has_bit(0)) {
+  if (has_data()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->data(), target);
   }
   
   // optional .contester.proto.Blob.CompressionInfo compression = 2;
-  if (_has_bit(1)) {
+  if (has_compression()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->compression(), target);
   }
   
   // optional bytes sha1 = 3;
-  if (_has_bit(2)) {
+  if (has_sha1()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         3, this->sha1(), target);
@@ -687,13 +688,13 @@ void Blob::MergeFrom(const ::google::protobuf::Message& from) {
 void Blob::MergeFrom(const Blob& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_data()) {
       set_data(from.data());
     }
-    if (from._has_bit(1)) {
+    if (from.has_compression()) {
       mutable_compression()->::contester::proto::Blob_CompressionInfo::MergeFrom(from.compression());
     }
-    if (from._has_bit(2)) {
+    if (from.has_sha1()) {
       set_sha1(from.sha1());
     }
   }
@@ -739,8 +740,6 @@ void Blob::Swap(Blob* other) {
 
 // ===================================================================
 
-const ::std::string File::_default_name_;
-const ::std::string File::_default_type_;
 #ifndef _MSC_VER
 const int File::kNameFieldNumber;
 const int File::kDataFieldNumber;
@@ -764,9 +763,9 @@ File::File(const File& from)
 
 void File::SharedCtor() {
   _cached_size_ = 0;
-  name_ = const_cast< ::std::string*>(&_default_name_);
+  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   data_ = NULL;
-  type_ = const_cast< ::std::string*>(&_default_type_);
+  type_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -775,10 +774,10 @@ File::~File() {
 }
 
 void File::SharedDtor() {
-  if (name_ != &_default_name_) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
     delete name_;
   }
-  if (type_ != &_default_type_) {
+  if (type_ != &::google::protobuf::internal::kEmptyString) {
     delete type_;
   }
   if (this != default_instance_) {
@@ -808,16 +807,16 @@ File* File::New() const {
 
 void File::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (name_ != &_default_name_) {
+    if (has_name()) {
+      if (name_ != &::google::protobuf::internal::kEmptyString) {
         name_->clear();
       }
     }
-    if (_has_bit(1)) {
+    if (has_data()) {
       if (data_ != NULL) data_->::contester::proto::Blob::Clear();
     }
-    if (_has_bit(2)) {
-      if (type_ != &_default_type_) {
+    if (has_type()) {
+      if (type_ != &::google::protobuf::internal::kEmptyString) {
         type_->clear();
       }
     }
@@ -898,7 +897,7 @@ bool File::MergePartialFromCodedStream(
 void File::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required string name = 1;
-  if (_has_bit(0)) {
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -907,13 +906,13 @@ void File::SerializeWithCachedSizes(
   }
   
   // required .contester.proto.Blob data = 2;
-  if (_has_bit(1)) {
+  if (has_data()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->data(), output);
   }
   
   // required string type = 3;
-  if (_has_bit(2)) {
+  if (has_type()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->type().data(), this->type().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -930,7 +929,7 @@ void File::SerializeWithCachedSizes(
 ::google::protobuf::uint8* File::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required string name = 1;
-  if (_has_bit(0)) {
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -940,14 +939,14 @@ void File::SerializeWithCachedSizes(
   }
   
   // required .contester.proto.Blob data = 2;
-  if (_has_bit(1)) {
+  if (has_data()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->data(), target);
   }
   
   // required string type = 3;
-  if (_has_bit(2)) {
+  if (has_type()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->type().data(), this->type().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -1015,13 +1014,13 @@ void File::MergeFrom(const ::google::protobuf::Message& from) {
 void File::MergeFrom(const File& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_name()) {
       set_name(from.name());
     }
-    if (from._has_bit(1)) {
+    if (from.has_data()) {
       mutable_data()->::contester::proto::Blob::MergeFrom(from.data());
     }
-    if (from._has_bit(2)) {
+    if (from.has_type()) {
       set_type(from.type());
     }
   }

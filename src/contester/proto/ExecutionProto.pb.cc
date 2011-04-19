@@ -2,6 +2,9 @@
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
 #include "contester/proto/ExecutionProto.pb.h"
+
+#include <algorithm>
+
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -168,7 +171,6 @@ struct StaticDescriptorInitializer_contester_2fproto_2fExecutionProto_2eproto {
 
 // ===================================================================
 
-const ::std::string RedirectParameters::_default_filename_;
 #ifndef _MSC_VER
 const int RedirectParameters::kFilenameFieldNumber;
 const int RedirectParameters::kMemoryFieldNumber;
@@ -192,7 +194,7 @@ RedirectParameters::RedirectParameters(const RedirectParameters& from)
 
 void RedirectParameters::SharedCtor() {
   _cached_size_ = 0;
-  filename_ = const_cast< ::std::string*>(&_default_filename_);
+  filename_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   memory_ = false;
   buffer_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -203,7 +205,7 @@ RedirectParameters::~RedirectParameters() {
 }
 
 void RedirectParameters::SharedDtor() {
-  if (filename_ != &_default_filename_) {
+  if (filename_ != &::google::protobuf::internal::kEmptyString) {
     delete filename_;
   }
   if (this != default_instance_) {
@@ -233,13 +235,13 @@ RedirectParameters* RedirectParameters::New() const {
 
 void RedirectParameters::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (filename_ != &_default_filename_) {
+    if (has_filename()) {
+      if (filename_ != &::google::protobuf::internal::kEmptyString) {
         filename_->clear();
       }
     }
     memory_ = false;
-    if (_has_bit(2)) {
+    if (has_buffer()) {
       if (buffer_ != NULL) buffer_->::contester::proto::Blob::Clear();
     }
   }
@@ -277,7 +279,7 @@ bool RedirectParameters::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &memory_)));
-          _set_bit(1);
+          set_has_memory();
         } else {
           goto handle_uninterpreted;
         }
@@ -318,7 +320,7 @@ bool RedirectParameters::MergePartialFromCodedStream(
 void RedirectParameters::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional string filename = 1;
-  if (_has_bit(0)) {
+  if (has_filename()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->filename().data(), this->filename().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -327,12 +329,12 @@ void RedirectParameters::SerializeWithCachedSizes(
   }
   
   // optional bool memory = 2;
-  if (_has_bit(1)) {
+  if (has_memory()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->memory(), output);
   }
   
   // optional .contester.proto.Blob buffer = 3;
-  if (_has_bit(2)) {
+  if (has_buffer()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, this->buffer(), output);
   }
@@ -346,7 +348,7 @@ void RedirectParameters::SerializeWithCachedSizes(
 ::google::protobuf::uint8* RedirectParameters::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional string filename = 1;
-  if (_has_bit(0)) {
+  if (has_filename()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->filename().data(), this->filename().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -356,12 +358,12 @@ void RedirectParameters::SerializeWithCachedSizes(
   }
   
   // optional bool memory = 2;
-  if (_has_bit(1)) {
+  if (has_memory()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->memory(), target);
   }
   
   // optional .contester.proto.Blob buffer = 3;
-  if (_has_bit(2)) {
+  if (has_buffer()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         3, this->buffer(), target);
@@ -424,13 +426,13 @@ void RedirectParameters::MergeFrom(const ::google::protobuf::Message& from) {
 void RedirectParameters::MergeFrom(const RedirectParameters& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_filename()) {
       set_filename(from.filename());
     }
-    if (from._has_bit(1)) {
+    if (from.has_memory()) {
       set_memory(from.memory());
     }
-    if (from._has_bit(2)) {
+    if (from.has_buffer()) {
       mutable_buffer()->::contester::proto::Blob::MergeFrom(from.buffer());
     }
   }
@@ -582,7 +584,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &killed_)));
-          _set_bit(0);
+          set_has_killed();
         } else {
           goto handle_uninterpreted;
         }
@@ -598,7 +600,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &time_limit_hit_)));
-          _set_bit(1);
+          set_has_time_limit_hit();
         } else {
           goto handle_uninterpreted;
         }
@@ -614,7 +616,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &memory_limit_hit_)));
-          _set_bit(2);
+          set_has_memory_limit_hit();
         } else {
           goto handle_uninterpreted;
         }
@@ -630,7 +632,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &inactive_)));
-          _set_bit(3);
+          set_has_inactive();
         } else {
           goto handle_uninterpreted;
         }
@@ -646,7 +648,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &time_limit_hard_)));
-          _set_bit(4);
+          set_has_time_limit_hard();
         } else {
           goto handle_uninterpreted;
         }
@@ -662,7 +664,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &stdout_overflow_)));
-          _set_bit(5);
+          set_has_stdout_overflow();
         } else {
           goto handle_uninterpreted;
         }
@@ -678,7 +680,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &stderr_overflow_)));
-          _set_bit(6);
+          set_has_stderr_overflow();
         } else {
           goto handle_uninterpreted;
         }
@@ -694,7 +696,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &stdpipe_timeout_)));
-          _set_bit(7);
+          set_has_stdpipe_timeout();
         } else {
           goto handle_uninterpreted;
         }
@@ -710,7 +712,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &time_limit_hit_post_)));
-          _set_bit(8);
+          set_has_time_limit_hit_post();
         } else {
           goto handle_uninterpreted;
         }
@@ -726,7 +728,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &memory_limit_hit_post_)));
-          _set_bit(9);
+          set_has_memory_limit_hit_post();
         } else {
           goto handle_uninterpreted;
         }
@@ -742,7 +744,7 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &process_limit_hit_)));
-          _set_bit(10);
+          set_has_process_limit_hit();
         } else {
           goto handle_uninterpreted;
         }
@@ -769,57 +771,57 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
 void ExecutionResultFlags::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional bool killed = 1;
-  if (_has_bit(0)) {
+  if (has_killed()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->killed(), output);
   }
   
   // optional bool time_limit_hit = 2;
-  if (_has_bit(1)) {
+  if (has_time_limit_hit()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->time_limit_hit(), output);
   }
   
   // optional bool memory_limit_hit = 3;
-  if (_has_bit(2)) {
+  if (has_memory_limit_hit()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->memory_limit_hit(), output);
   }
   
   // optional bool inactive = 4;
-  if (_has_bit(3)) {
+  if (has_inactive()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->inactive(), output);
   }
   
   // optional bool time_limit_hard = 5;
-  if (_has_bit(4)) {
+  if (has_time_limit_hard()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->time_limit_hard(), output);
   }
   
   // optional bool stdout_overflow = 6;
-  if (_has_bit(5)) {
+  if (has_stdout_overflow()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(6, this->stdout_overflow(), output);
   }
   
   // optional bool stderr_overflow = 7;
-  if (_has_bit(6)) {
+  if (has_stderr_overflow()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(7, this->stderr_overflow(), output);
   }
   
   // optional bool stdpipe_timeout = 8;
-  if (_has_bit(7)) {
+  if (has_stdpipe_timeout()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(8, this->stdpipe_timeout(), output);
   }
   
   // optional bool time_limit_hit_post = 9;
-  if (_has_bit(8)) {
+  if (has_time_limit_hit_post()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(9, this->time_limit_hit_post(), output);
   }
   
   // optional bool memory_limit_hit_post = 10;
-  if (_has_bit(9)) {
+  if (has_memory_limit_hit_post()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(10, this->memory_limit_hit_post(), output);
   }
   
   // optional bool process_limit_hit = 11;
-  if (_has_bit(10)) {
+  if (has_process_limit_hit()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(11, this->process_limit_hit(), output);
   }
   
@@ -832,57 +834,57 @@ void ExecutionResultFlags::SerializeWithCachedSizes(
 ::google::protobuf::uint8* ExecutionResultFlags::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional bool killed = 1;
-  if (_has_bit(0)) {
+  if (has_killed()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->killed(), target);
   }
   
   // optional bool time_limit_hit = 2;
-  if (_has_bit(1)) {
+  if (has_time_limit_hit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->time_limit_hit(), target);
   }
   
   // optional bool memory_limit_hit = 3;
-  if (_has_bit(2)) {
+  if (has_memory_limit_hit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->memory_limit_hit(), target);
   }
   
   // optional bool inactive = 4;
-  if (_has_bit(3)) {
+  if (has_inactive()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->inactive(), target);
   }
   
   // optional bool time_limit_hard = 5;
-  if (_has_bit(4)) {
+  if (has_time_limit_hard()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->time_limit_hard(), target);
   }
   
   // optional bool stdout_overflow = 6;
-  if (_has_bit(5)) {
+  if (has_stdout_overflow()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(6, this->stdout_overflow(), target);
   }
   
   // optional bool stderr_overflow = 7;
-  if (_has_bit(6)) {
+  if (has_stderr_overflow()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(7, this->stderr_overflow(), target);
   }
   
   // optional bool stdpipe_timeout = 8;
-  if (_has_bit(7)) {
+  if (has_stdpipe_timeout()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(8, this->stdpipe_timeout(), target);
   }
   
   // optional bool time_limit_hit_post = 9;
-  if (_has_bit(8)) {
+  if (has_time_limit_hit_post()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(9, this->time_limit_hit_post(), target);
   }
   
   // optional bool memory_limit_hit_post = 10;
-  if (_has_bit(9)) {
+  if (has_memory_limit_hit_post()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(10, this->memory_limit_hit_post(), target);
   }
   
   // optional bool process_limit_hit = 11;
-  if (_has_bit(10)) {
+  if (has_process_limit_hit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(11, this->process_limit_hit(), target);
   }
   
@@ -981,39 +983,39 @@ void ExecutionResultFlags::MergeFrom(const ::google::protobuf::Message& from) {
 void ExecutionResultFlags::MergeFrom(const ExecutionResultFlags& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_killed()) {
       set_killed(from.killed());
     }
-    if (from._has_bit(1)) {
+    if (from.has_time_limit_hit()) {
       set_time_limit_hit(from.time_limit_hit());
     }
-    if (from._has_bit(2)) {
+    if (from.has_memory_limit_hit()) {
       set_memory_limit_hit(from.memory_limit_hit());
     }
-    if (from._has_bit(3)) {
+    if (from.has_inactive()) {
       set_inactive(from.inactive());
     }
-    if (from._has_bit(4)) {
+    if (from.has_time_limit_hard()) {
       set_time_limit_hard(from.time_limit_hard());
     }
-    if (from._has_bit(5)) {
+    if (from.has_stdout_overflow()) {
       set_stdout_overflow(from.stdout_overflow());
     }
-    if (from._has_bit(6)) {
+    if (from.has_stderr_overflow()) {
       set_stderr_overflow(from.stderr_overflow());
     }
-    if (from._has_bit(7)) {
+    if (from.has_stdpipe_timeout()) {
       set_stdpipe_timeout(from.stdpipe_timeout());
     }
   }
   if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (from._has_bit(8)) {
+    if (from.has_time_limit_hit_post()) {
       set_time_limit_hit_post(from.time_limit_hit_post());
     }
-    if (from._has_bit(9)) {
+    if (from.has_memory_limit_hit_post()) {
       set_memory_limit_hit_post(from.memory_limit_hit_post());
     }
-    if (from._has_bit(10)) {
+    if (from.has_process_limit_hit()) {
       set_process_limit_hit(from.process_limit_hit());
     }
   }
@@ -1147,7 +1149,7 @@ bool ExecutionResultTime::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &user_time_micros_)));
-          _set_bit(0);
+          set_has_user_time_micros();
         } else {
           goto handle_uninterpreted;
         }
@@ -1163,7 +1165,7 @@ bool ExecutionResultTime::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &kernel_time_micros_)));
-          _set_bit(1);
+          set_has_kernel_time_micros();
         } else {
           goto handle_uninterpreted;
         }
@@ -1179,7 +1181,7 @@ bool ExecutionResultTime::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &wall_time_micros_)));
-          _set_bit(2);
+          set_has_wall_time_micros();
         } else {
           goto handle_uninterpreted;
         }
@@ -1206,17 +1208,17 @@ bool ExecutionResultTime::MergePartialFromCodedStream(
 void ExecutionResultTime::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional uint64 user_time_micros = 1;
-  if (_has_bit(0)) {
+  if (has_user_time_micros()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->user_time_micros(), output);
   }
   
   // optional uint64 kernel_time_micros = 2;
-  if (_has_bit(1)) {
+  if (has_kernel_time_micros()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->kernel_time_micros(), output);
   }
   
   // optional uint64 wall_time_micros = 3;
-  if (_has_bit(2)) {
+  if (has_wall_time_micros()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->wall_time_micros(), output);
   }
   
@@ -1229,17 +1231,17 @@ void ExecutionResultTime::SerializeWithCachedSizes(
 ::google::protobuf::uint8* ExecutionResultTime::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional uint64 user_time_micros = 1;
-  if (_has_bit(0)) {
+  if (has_user_time_micros()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->user_time_micros(), target);
   }
   
   // optional uint64 kernel_time_micros = 2;
-  if (_has_bit(1)) {
+  if (has_kernel_time_micros()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(2, this->kernel_time_micros(), target);
   }
   
   // optional uint64 wall_time_micros = 3;
-  if (_has_bit(2)) {
+  if (has_wall_time_micros()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->wall_time_micros(), target);
   }
   
@@ -1302,13 +1304,13 @@ void ExecutionResultTime::MergeFrom(const ::google::protobuf::Message& from) {
 void ExecutionResultTime::MergeFrom(const ExecutionResultTime& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_user_time_micros()) {
       set_user_time_micros(from.user_time_micros());
     }
-    if (from._has_bit(1)) {
+    if (from.has_kernel_time_micros()) {
       set_kernel_time_micros(from.kernel_time_micros());
     }
-    if (from._has_bit(2)) {
+    if (from.has_wall_time_micros()) {
       set_wall_time_micros(from.wall_time_micros());
     }
   }

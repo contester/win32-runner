@@ -2,6 +2,9 @@
 
 #define INTERNAL_SUPPRESS_PROTOBUF_FIELD_DEPRECATION
 #include "rpc.pb.h"
+
+#include <algorithm>
+
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
@@ -283,8 +286,6 @@ struct StaticDescriptorInitializer_rpc_2eproto {
 
 // ===================================================================
 
-const ::std::string AuthInfo_Simple::_default_username_;
-const ::std::string AuthInfo_Simple::_default_password_;
 #ifndef _MSC_VER
 const int AuthInfo_Simple::kUsernameFieldNumber;
 const int AuthInfo_Simple::kPasswordFieldNumber;
@@ -306,8 +307,8 @@ AuthInfo_Simple::AuthInfo_Simple(const AuthInfo_Simple& from)
 
 void AuthInfo_Simple::SharedCtor() {
   _cached_size_ = 0;
-  username_ = const_cast< ::std::string*>(&_default_username_);
-  password_ = const_cast< ::std::string*>(&_default_password_);
+  username_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -316,10 +317,10 @@ AuthInfo_Simple::~AuthInfo_Simple() {
 }
 
 void AuthInfo_Simple::SharedDtor() {
-  if (username_ != &_default_username_) {
+  if (username_ != &::google::protobuf::internal::kEmptyString) {
     delete username_;
   }
-  if (password_ != &_default_password_) {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
     delete password_;
   }
   if (this != default_instance_) {
@@ -348,13 +349,13 @@ AuthInfo_Simple* AuthInfo_Simple::New() const {
 
 void AuthInfo_Simple::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (username_ != &_default_username_) {
+    if (has_username()) {
+      if (username_ != &::google::protobuf::internal::kEmptyString) {
         username_->clear();
       }
     }
-    if (_has_bit(1)) {
-      if (password_ != &_default_password_) {
+    if (has_password()) {
+      if (password_ != &::google::protobuf::internal::kEmptyString) {
         password_->clear();
       }
     }
@@ -421,7 +422,7 @@ bool AuthInfo_Simple::MergePartialFromCodedStream(
 void AuthInfo_Simple::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional string username = 1;
-  if (_has_bit(0)) {
+  if (has_username()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->username().data(), this->username().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -430,7 +431,7 @@ void AuthInfo_Simple::SerializeWithCachedSizes(
   }
   
   // optional string password = 2;
-  if (_has_bit(1)) {
+  if (has_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->password().data(), this->password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -447,7 +448,7 @@ void AuthInfo_Simple::SerializeWithCachedSizes(
 ::google::protobuf::uint8* AuthInfo_Simple::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional string username = 1;
-  if (_has_bit(0)) {
+  if (has_username()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->username().data(), this->username().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -457,7 +458,7 @@ void AuthInfo_Simple::SerializeWithCachedSizes(
   }
   
   // optional string password = 2;
-  if (_has_bit(1)) {
+  if (has_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->password().data(), this->password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -518,10 +519,10 @@ void AuthInfo_Simple::MergeFrom(const ::google::protobuf::Message& from) {
 void AuthInfo_Simple::MergeFrom(const AuthInfo_Simple& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_username()) {
       set_username(from.username());
     }
-    if (from._has_bit(1)) {
+    if (from.has_password()) {
       set_password(from.password());
     }
   }
@@ -623,7 +624,7 @@ AuthInfo* AuthInfo::New() const {
 
 void AuthInfo::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
+    if (has_simple()) {
       if (simple_ != NULL) simple_->::AuthInfo_Simple::Clear();
     }
   }
@@ -669,7 +670,7 @@ bool AuthInfo::MergePartialFromCodedStream(
 void AuthInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional .AuthInfo.Simple simple = 1;
-  if (_has_bit(0)) {
+  if (has_simple()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->simple(), output);
   }
@@ -683,7 +684,7 @@ void AuthInfo::SerializeWithCachedSizes(
 ::google::protobuf::uint8* AuthInfo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional .AuthInfo.Simple simple = 1;
-  if (_has_bit(0)) {
+  if (has_simple()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         1, this->simple(), target);
@@ -734,7 +735,7 @@ void AuthInfo::MergeFrom(const ::google::protobuf::Message& from) {
 void AuthInfo::MergeFrom(const AuthInfo& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_simple()) {
       mutable_simple()->::AuthInfo_Simple::MergeFrom(from.simple());
     }
   }
@@ -778,8 +779,6 @@ void AuthInfo::Swap(AuthInfo* other) {
 
 // ===================================================================
 
-const ::std::string Request::_default_method_name_;
-const ::std::string Request::_default_message_;
 #ifndef _MSC_VER
 const int Request::kMethodNameFieldNumber;
 const int Request::kMessageFieldNumber;
@@ -803,8 +802,8 @@ Request::Request(const Request& from)
 
 void Request::SharedCtor() {
   _cached_size_ = 0;
-  method_name_ = const_cast< ::std::string*>(&_default_method_name_);
-  message_ = const_cast< ::std::string*>(&_default_message_);
+  method_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  message_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   timestamp_ = GOOGLE_ULONGLONG(0);
   deadline_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -815,10 +814,10 @@ Request::~Request() {
 }
 
 void Request::SharedDtor() {
-  if (method_name_ != &_default_method_name_) {
+  if (method_name_ != &::google::protobuf::internal::kEmptyString) {
     delete method_name_;
   }
-  if (message_ != &_default_message_) {
+  if (message_ != &::google::protobuf::internal::kEmptyString) {
     delete message_;
   }
   if (this != default_instance_) {
@@ -847,13 +846,13 @@ Request* Request::New() const {
 
 void Request::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (method_name_ != &_default_method_name_) {
+    if (has_method_name()) {
+      if (method_name_ != &::google::protobuf::internal::kEmptyString) {
         method_name_->clear();
       }
     }
-    if (_has_bit(1)) {
-      if (message_ != &_default_message_) {
+    if (has_message()) {
+      if (message_ != &::google::protobuf::internal::kEmptyString) {
         message_->clear();
       }
     }
@@ -908,7 +907,7 @@ bool Request::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &timestamp_)));
-          _set_bit(2);
+          set_has_timestamp();
         } else {
           goto handle_uninterpreted;
         }
@@ -924,7 +923,7 @@ bool Request::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &deadline_)));
-          _set_bit(3);
+          set_has_deadline();
         } else {
           goto handle_uninterpreted;
         }
@@ -951,7 +950,7 @@ bool Request::MergePartialFromCodedStream(
 void Request::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional string method_name = 1;
-  if (_has_bit(0)) {
+  if (has_method_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->method_name().data(), this->method_name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -960,18 +959,18 @@ void Request::SerializeWithCachedSizes(
   }
   
   // optional bytes message = 2;
-  if (_has_bit(1)) {
+  if (has_message()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       2, this->message(), output);
   }
   
   // optional uint64 timestamp = 3;
-  if (_has_bit(2)) {
+  if (has_timestamp()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->timestamp(), output);
   }
   
   // optional uint64 deadline = 4;
-  if (_has_bit(3)) {
+  if (has_deadline()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->deadline(), output);
   }
   
@@ -984,7 +983,7 @@ void Request::SerializeWithCachedSizes(
 ::google::protobuf::uint8* Request::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional string method_name = 1;
-  if (_has_bit(0)) {
+  if (has_method_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->method_name().data(), this->method_name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
@@ -994,19 +993,19 @@ void Request::SerializeWithCachedSizes(
   }
   
   // optional bytes message = 2;
-  if (_has_bit(1)) {
+  if (has_message()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         2, this->message(), target);
   }
   
   // optional uint64 timestamp = 3;
-  if (_has_bit(2)) {
+  if (has_timestamp()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->timestamp(), target);
   }
   
   // optional uint64 deadline = 4;
-  if (_has_bit(3)) {
+  if (has_deadline()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->deadline(), target);
   }
   
@@ -1076,16 +1075,16 @@ void Request::MergeFrom(const ::google::protobuf::Message& from) {
 void Request::MergeFrom(const Request& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_method_name()) {
       set_method_name(from.method_name());
     }
-    if (from._has_bit(1)) {
+    if (from.has_message()) {
       set_message(from.message());
     }
-    if (from._has_bit(2)) {
+    if (from.has_timestamp()) {
       set_timestamp(from.timestamp());
     }
-    if (from._has_bit(3)) {
+    if (from.has_deadline()) {
       set_deadline(from.deadline());
     }
   }
@@ -1132,7 +1131,6 @@ void Request::Swap(Request* other) {
 
 // ===================================================================
 
-const ::std::string RpcError_ExceptionInfo::_default_traceback_;
 #ifndef _MSC_VER
 const int RpcError_ExceptionInfo::kTracebackFieldNumber;
 #endif  // !_MSC_VER
@@ -1153,7 +1151,7 @@ RpcError_ExceptionInfo::RpcError_ExceptionInfo(const RpcError_ExceptionInfo& fro
 
 void RpcError_ExceptionInfo::SharedCtor() {
   _cached_size_ = 0;
-  traceback_ = const_cast< ::std::string*>(&_default_traceback_);
+  traceback_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1162,7 +1160,7 @@ RpcError_ExceptionInfo::~RpcError_ExceptionInfo() {
 }
 
 void RpcError_ExceptionInfo::SharedDtor() {
-  if (traceback_ != &_default_traceback_) {
+  if (traceback_ != &::google::protobuf::internal::kEmptyString) {
     delete traceback_;
   }
   if (this != default_instance_) {
@@ -1191,8 +1189,8 @@ RpcError_ExceptionInfo* RpcError_ExceptionInfo::New() const {
 
 void RpcError_ExceptionInfo::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (traceback_ != &_default_traceback_) {
+    if (has_traceback()) {
+      if (traceback_ != &::google::protobuf::internal::kEmptyString) {
         traceback_->clear();
       }
     }
@@ -1239,7 +1237,7 @@ bool RpcError_ExceptionInfo::MergePartialFromCodedStream(
 void RpcError_ExceptionInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional bytes traceback = 1;
-  if (_has_bit(0)) {
+  if (has_traceback()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       1, this->traceback(), output);
   }
@@ -1253,7 +1251,7 @@ void RpcError_ExceptionInfo::SerializeWithCachedSizes(
 ::google::protobuf::uint8* RpcError_ExceptionInfo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional bytes traceback = 1;
-  if (_has_bit(0)) {
+  if (has_traceback()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->traceback(), target);
@@ -1304,7 +1302,7 @@ void RpcError_ExceptionInfo::MergeFrom(const ::google::protobuf::Message& from) 
 void RpcError_ExceptionInfo::MergeFrom(const RpcError_ExceptionInfo& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_traceback()) {
       set_traceback(from.traceback());
     }
   }
@@ -1405,7 +1403,7 @@ RpcError* RpcError::New() const {
 
 void RpcError::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
+    if (has_exception_info()) {
       if (exception_info_ != NULL) exception_info_->::RpcError_ExceptionInfo::Clear();
     }
   }
@@ -1451,7 +1449,7 @@ bool RpcError::MergePartialFromCodedStream(
 void RpcError::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional .RpcError.ExceptionInfo exception_info = 1;
-  if (_has_bit(0)) {
+  if (has_exception_info()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->exception_info(), output);
   }
@@ -1465,7 +1463,7 @@ void RpcError::SerializeWithCachedSizes(
 ::google::protobuf::uint8* RpcError::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional .RpcError.ExceptionInfo exception_info = 1;
-  if (_has_bit(0)) {
+  if (has_exception_info()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         1, this->exception_info(), target);
@@ -1516,7 +1514,7 @@ void RpcError::MergeFrom(const ::google::protobuf::Message& from) {
 void RpcError::MergeFrom(const RpcError& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_exception_info()) {
       mutable_exception_info()->::RpcError_ExceptionInfo::MergeFrom(from.exception_info());
     }
   }
@@ -1560,7 +1558,6 @@ void RpcError::Swap(RpcError* other) {
 
 // ===================================================================
 
-const ::std::string Response::_default_message_;
 #ifndef _MSC_VER
 const int Response::kMessageFieldNumber;
 const int Response::kStreamingFieldNumber;
@@ -1583,7 +1580,7 @@ Response::Response(const Response& from)
 
 void Response::SharedCtor() {
   _cached_size_ = 0;
-  message_ = const_cast< ::std::string*>(&_default_message_);
+  message_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   streaming_ = 0u;
   timing_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1594,7 +1591,7 @@ Response::~Response() {
 }
 
 void Response::SharedDtor() {
-  if (message_ != &_default_message_) {
+  if (message_ != &::google::protobuf::internal::kEmptyString) {
     delete message_;
   }
   if (this != default_instance_) {
@@ -1623,8 +1620,8 @@ Response* Response::New() const {
 
 void Response::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (_has_bit(0)) {
-      if (message_ != &_default_message_) {
+    if (has_message()) {
+      if (message_ != &::google::protobuf::internal::kEmptyString) {
         message_->clear();
       }
     }
@@ -1662,7 +1659,7 @@ bool Response::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &streaming_)));
-          _set_bit(1);
+          set_has_streaming();
         } else {
           goto handle_uninterpreted;
         }
@@ -1678,7 +1675,7 @@ bool Response::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &timing_)));
-          _set_bit(2);
+          set_has_timing();
         } else {
           goto handle_uninterpreted;
         }
@@ -1705,18 +1702,18 @@ bool Response::MergePartialFromCodedStream(
 void Response::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional bytes message = 1;
-  if (_has_bit(0)) {
+  if (has_message()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       1, this->message(), output);
   }
   
   // optional uint32 streaming = 2;
-  if (_has_bit(1)) {
+  if (has_streaming()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->streaming(), output);
   }
   
   // optional uint64 timing = 3;
-  if (_has_bit(2)) {
+  if (has_timing()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->timing(), output);
   }
   
@@ -1729,19 +1726,19 @@ void Response::SerializeWithCachedSizes(
 ::google::protobuf::uint8* Response::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional bytes message = 1;
-  if (_has_bit(0)) {
+  if (has_message()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->message(), target);
   }
   
   // optional uint32 streaming = 2;
-  if (_has_bit(1)) {
+  if (has_streaming()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->streaming(), target);
   }
   
   // optional uint64 timing = 3;
-  if (_has_bit(2)) {
+  if (has_timing()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->timing(), target);
   }
   
@@ -1804,13 +1801,13 @@ void Response::MergeFrom(const ::google::protobuf::Message& from) {
 void Response::MergeFrom(const Response& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_message()) {
       set_message(from.message());
     }
-    if (from._has_bit(1)) {
+    if (from.has_streaming()) {
       set_streaming(from.streaming());
     }
-    if (from._has_bit(2)) {
+    if (from.has_timing()) {
       set_timing(from.timing());
     }
   }
@@ -1928,16 +1925,16 @@ ProtocolMessage* ProtocolMessage::New() const {
 void ProtocolMessage::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     sequence_number_ = 0u;
-    if (_has_bit(1)) {
+    if (has_request()) {
       if (request_ != NULL) request_->::Request::Clear();
     }
-    if (_has_bit(2)) {
+    if (has_response()) {
       if (response_ != NULL) response_->::Response::Clear();
     }
-    if (_has_bit(3)) {
+    if (has_error()) {
       if (error_ != NULL) error_->::RpcError::Clear();
     }
-    if (_has_bit(4)) {
+    if (has_auth_info()) {
       if (auth_info_ != NULL) auth_info_->::AuthInfo::Clear();
     }
   }
@@ -1958,7 +1955,7 @@ bool ProtocolMessage::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &sequence_number_)));
-          _set_bit(0);
+          set_has_sequence_number();
         } else {
           goto handle_uninterpreted;
         }
@@ -2041,30 +2038,30 @@ bool ProtocolMessage::MergePartialFromCodedStream(
 void ProtocolMessage::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional uint32 sequence_number = 1;
-  if (_has_bit(0)) {
+  if (has_sequence_number()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->sequence_number(), output);
   }
   
   // optional .Request request = 2;
-  if (_has_bit(1)) {
+  if (has_request()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->request(), output);
   }
   
   // optional .Response response = 3;
-  if (_has_bit(2)) {
+  if (has_response()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, this->response(), output);
   }
   
   // optional .RpcError error = 4;
-  if (_has_bit(3)) {
+  if (has_error()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       4, this->error(), output);
   }
   
   // optional .AuthInfo auth_info = 5;
-  if (_has_bit(4)) {
+  if (has_auth_info()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       5, this->auth_info(), output);
   }
@@ -2078,33 +2075,33 @@ void ProtocolMessage::SerializeWithCachedSizes(
 ::google::protobuf::uint8* ProtocolMessage::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional uint32 sequence_number = 1;
-  if (_has_bit(0)) {
+  if (has_sequence_number()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->sequence_number(), target);
   }
   
   // optional .Request request = 2;
-  if (_has_bit(1)) {
+  if (has_request()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->request(), target);
   }
   
   // optional .Response response = 3;
-  if (_has_bit(2)) {
+  if (has_response()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         3, this->response(), target);
   }
   
   // optional .RpcError error = 4;
-  if (_has_bit(3)) {
+  if (has_error()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         4, this->error(), target);
   }
   
   // optional .AuthInfo auth_info = 5;
-  if (_has_bit(4)) {
+  if (has_auth_info()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         5, this->auth_info(), target);
@@ -2183,19 +2180,19 @@ void ProtocolMessage::MergeFrom(const ::google::protobuf::Message& from) {
 void ProtocolMessage::MergeFrom(const ProtocolMessage& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_sequence_number()) {
       set_sequence_number(from.sequence_number());
     }
-    if (from._has_bit(1)) {
+    if (from.has_request()) {
       mutable_request()->::Request::MergeFrom(from.request());
     }
-    if (from._has_bit(2)) {
+    if (from.has_response()) {
       mutable_response()->::Response::MergeFrom(from.response());
     }
-    if (from._has_bit(3)) {
+    if (from.has_error()) {
       mutable_error()->::RpcError::MergeFrom(from.error());
     }
-    if (from._has_bit(4)) {
+    if (from.has_auth_info()) {
       mutable_auth_info()->::AuthInfo::MergeFrom(from.auth_info());
     }
   }
@@ -2307,10 +2304,10 @@ LoggedProtocolMessage* LoggedProtocolMessage::New() const {
 void LoggedProtocolMessage::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     timestamp_ = GOOGLE_ULONGLONG(0);
-    if (_has_bit(1)) {
+    if (has_sent()) {
       if (sent_ != NULL) sent_->::ProtocolMessage::Clear();
     }
-    if (_has_bit(2)) {
+    if (has_received()) {
       if (received_ != NULL) received_->::ProtocolMessage::Clear();
     }
   }
@@ -2331,7 +2328,7 @@ bool LoggedProtocolMessage::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &timestamp_)));
-          _set_bit(0);
+          set_has_timestamp();
         } else {
           goto handle_uninterpreted;
         }
@@ -2386,18 +2383,18 @@ bool LoggedProtocolMessage::MergePartialFromCodedStream(
 void LoggedProtocolMessage::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // optional uint64 timestamp = 1;
-  if (_has_bit(0)) {
+  if (has_timestamp()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->timestamp(), output);
   }
   
   // optional .ProtocolMessage sent = 2;
-  if (_has_bit(1)) {
+  if (has_sent()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->sent(), output);
   }
   
   // optional .ProtocolMessage received = 3;
-  if (_has_bit(2)) {
+  if (has_received()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, this->received(), output);
   }
@@ -2411,19 +2408,19 @@ void LoggedProtocolMessage::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LoggedProtocolMessage::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // optional uint64 timestamp = 1;
-  if (_has_bit(0)) {
+  if (has_timestamp()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->timestamp(), target);
   }
   
   // optional .ProtocolMessage sent = 2;
-  if (_has_bit(1)) {
+  if (has_sent()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         2, this->sent(), target);
   }
   
   // optional .ProtocolMessage received = 3;
-  if (_has_bit(2)) {
+  if (has_received()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         3, this->received(), target);
@@ -2488,13 +2485,13 @@ void LoggedProtocolMessage::MergeFrom(const ::google::protobuf::Message& from) {
 void LoggedProtocolMessage::MergeFrom(const LoggedProtocolMessage& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from._has_bit(0)) {
+    if (from.has_timestamp()) {
       set_timestamp(from.timestamp());
     }
-    if (from._has_bit(1)) {
+    if (from.has_sent()) {
       mutable_sent()->::ProtocolMessage::MergeFrom(from.sent());
     }
-    if (from._has_bit(2)) {
+    if (from.has_received()) {
       mutable_received()->::ProtocolMessage::MergeFrom(from.received());
     }
   }
