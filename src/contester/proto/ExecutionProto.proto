@@ -20,6 +20,8 @@ message ExecutionResultFlags {
   optional bool time_limit_hit_post = 9;
   optional bool memory_limit_hit_post = 10;
   optional bool process_limit_hit = 11;
+  optional bool stopped_by_signal = 12; // linux: SIGSTOP/PTRACE
+  optional bool killed_by_signal = 13; // linux: WTERMSIG
 };
 
 message ExecutionResultTime {

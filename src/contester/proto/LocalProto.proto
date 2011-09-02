@@ -17,9 +17,10 @@ message LocalEnvironment {
 };
 
 message LoginInformation {
-  required string username = 1;
-  required string password = 2;
+  optional string username = 1;
+  optional string password = 2;
   optional string domain = 3;
+  optional uint32 uid = 4;
 };
 
 message LocalExecutionParameters {
@@ -41,6 +42,8 @@ message LocalExecutionParameters {
   optional RedirectParameters std_in = 12;
   optional RedirectParameters std_out = 13;
   optional RedirectParameters std_err = 14;
+
+  repeated string command_line_parameters = 16;
 };
 
 message LocalExecutionResult {
@@ -51,9 +54,16 @@ message LocalExecutionResult {
   optional Blob std_out = 5;
   optional Blob std_err = 6;
   optional uint64 total_processes = 7;
+  optional int32 kill_signal = 8;
+  optional int32 stop_signal = 9;
 };
 
 message LocalExecution {
   required LocalExecutionParameters parameters = 1;
   optional LocalExecutionResult result = 2;
+};
+
+message OwnerInfo {
+  optional uint32 uid = 1;
+  repeated string pathname = 2;
 };

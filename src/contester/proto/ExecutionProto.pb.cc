@@ -55,7 +55,7 @@ void protobuf_AssignDesc_contester_2fproto_2fExecutionProto_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RedirectParameters));
   ExecutionResultFlags_descriptor_ = file->message_type(1);
-  static const int ExecutionResultFlags_offsets_[11] = {
+  static const int ExecutionResultFlags_offsets_[13] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, killed_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, time_limit_hit_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, memory_limit_hit_),
@@ -67,6 +67,8 @@ void protobuf_AssignDesc_contester_2fproto_2fExecutionProto_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, time_limit_hit_post_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, memory_limit_hit_post_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, process_limit_hit_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, stopped_by_signal_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ExecutionResultFlags, killed_by_signal_),
   };
   ExecutionResultFlags_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -139,17 +141,18 @@ void protobuf_AddDesc_contester_2fproto_2fExecutionProto_2eproto() {
     "contester.proto\032\037contester/proto/BlobPro"
     "to.proto\"]\n\022RedirectParameters\022\020\n\010filena"
     "me\030\001 \001(\t\022\016\n\006memory\030\002 \001(\010\022%\n\006buffer\030\003 \001(\013"
-    "2\025.contester.proto.Blob\"\245\002\n\024ExecutionRes"
+    "2\025.contester.proto.Blob\"\332\002\n\024ExecutionRes"
     "ultFlags\022\016\n\006killed\030\001 \001(\010\022\026\n\016time_limit_h"
     "it\030\002 \001(\010\022\030\n\020memory_limit_hit\030\003 \001(\010\022\020\n\010in"
     "active\030\004 \001(\010\022\027\n\017time_limit_hard\030\005 \001(\010\022\027\n"
     "\017stdout_overflow\030\006 \001(\010\022\027\n\017stderr_overflo"
     "w\030\007 \001(\010\022\027\n\017stdpipe_timeout\030\010 \001(\010\022\033\n\023time"
     "_limit_hit_post\030\t \001(\010\022\035\n\025memory_limit_hi"
-    "t_post\030\n \001(\010\022\031\n\021process_limit_hit\030\013 \001(\010\""
-    "e\n\023ExecutionResultTime\022\030\n\020user_time_micr"
-    "os\030\001 \001(\004\022\032\n\022kernel_time_micros\030\002 \001(\004\022\030\n\020"
-    "wall_time_micros\030\003 \001(\004", 582);
+    "t_post\030\n \001(\010\022\031\n\021process_limit_hit\030\013 \001(\010\022"
+    "\031\n\021stopped_by_signal\030\014 \001(\010\022\030\n\020killed_by_"
+    "signal\030\r \001(\010\"e\n\023ExecutionResultTime\022\030\n\020u"
+    "ser_time_micros\030\001 \001(\004\022\032\n\022kernel_time_mic"
+    "ros\030\002 \001(\004\022\030\n\020wall_time_micros\030\003 \001(\004", 635);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "contester/proto/ExecutionProto.proto", &protobuf_RegisterTypes);
   RedirectParameters::default_instance_ = new RedirectParameters();
@@ -490,6 +493,8 @@ const int ExecutionResultFlags::kStdpipeTimeoutFieldNumber;
 const int ExecutionResultFlags::kTimeLimitHitPostFieldNumber;
 const int ExecutionResultFlags::kMemoryLimitHitPostFieldNumber;
 const int ExecutionResultFlags::kProcessLimitHitFieldNumber;
+const int ExecutionResultFlags::kStoppedBySignalFieldNumber;
+const int ExecutionResultFlags::kKilledBySignalFieldNumber;
 #endif  // !_MSC_VER
 
 ExecutionResultFlags::ExecutionResultFlags()
@@ -519,6 +524,8 @@ void ExecutionResultFlags::SharedCtor() {
   time_limit_hit_post_ = false;
   memory_limit_hit_post_ = false;
   process_limit_hit_ = false;
+  stopped_by_signal_ = false;
+  killed_by_signal_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -566,6 +573,8 @@ void ExecutionResultFlags::Clear() {
     time_limit_hit_post_ = false;
     memory_limit_hit_post_ = false;
     process_limit_hit_ = false;
+    stopped_by_signal_ = false;
+    killed_by_signal_ = false;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -748,6 +757,38 @@ bool ExecutionResultFlags::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(96)) goto parse_stopped_by_signal;
+        break;
+      }
+      
+      // optional bool stopped_by_signal = 12;
+      case 12: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_stopped_by_signal:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &stopped_by_signal_)));
+          set_has_stopped_by_signal();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(104)) goto parse_killed_by_signal;
+        break;
+      }
+      
+      // optional bool killed_by_signal = 13;
+      case 13: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_killed_by_signal:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &killed_by_signal_)));
+          set_has_killed_by_signal();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -825,6 +866,16 @@ void ExecutionResultFlags::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(11, this->process_limit_hit(), output);
   }
   
+  // optional bool stopped_by_signal = 12;
+  if (has_stopped_by_signal()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(12, this->stopped_by_signal(), output);
+  }
+  
+  // optional bool killed_by_signal = 13;
+  if (has_killed_by_signal()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(13, this->killed_by_signal(), output);
+  }
+  
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -886,6 +937,16 @@ void ExecutionResultFlags::SerializeWithCachedSizes(
   // optional bool process_limit_hit = 11;
   if (has_process_limit_hit()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(11, this->process_limit_hit(), target);
+  }
+  
+  // optional bool stopped_by_signal = 12;
+  if (has_stopped_by_signal()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(12, this->stopped_by_signal(), target);
+  }
+  
+  // optional bool killed_by_signal = 13;
+  if (has_killed_by_signal()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(13, this->killed_by_signal(), target);
   }
   
   if (!unknown_fields().empty()) {
@@ -956,6 +1017,16 @@ int ExecutionResultFlags::ByteSize() const {
       total_size += 1 + 1;
     }
     
+    // optional bool stopped_by_signal = 12;
+    if (has_stopped_by_signal()) {
+      total_size += 1 + 1;
+    }
+    
+    // optional bool killed_by_signal = 13;
+    if (has_killed_by_signal()) {
+      total_size += 1 + 1;
+    }
+    
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -1018,6 +1089,12 @@ void ExecutionResultFlags::MergeFrom(const ExecutionResultFlags& from) {
     if (from.has_process_limit_hit()) {
       set_process_limit_hit(from.process_limit_hit());
     }
+    if (from.has_stopped_by_signal()) {
+      set_stopped_by_signal(from.stopped_by_signal());
+    }
+    if (from.has_killed_by_signal()) {
+      set_killed_by_signal(from.killed_by_signal());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1052,6 +1129,8 @@ void ExecutionResultFlags::Swap(ExecutionResultFlags* other) {
     std::swap(time_limit_hit_post_, other->time_limit_hit_post_);
     std::swap(memory_limit_hit_post_, other->memory_limit_hit_post_);
     std::swap(process_limit_hit_, other->process_limit_hit_);
+    std::swap(stopped_by_signal_, other->stopped_by_signal_);
+    std::swap(killed_by_signal_, other->killed_by_signal_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
