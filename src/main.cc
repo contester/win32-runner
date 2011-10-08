@@ -6,6 +6,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -34,7 +35,7 @@ class SubprocessWrapper {
 };
 
 void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
-  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +ExecuteDoneBh" << std::endl;
+  // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +ExecuteDoneBh" << std::endl;
 
   scoped_ptr<SubprocessWrapper> sw(reinterpret_cast<SubprocessWrapper*>(wrapper));
   contester::proto::LocalExecutionResult response;
@@ -71,7 +72,7 @@ void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
   sw->rpc_->Return(&response);
 
   Subprocess_Destroy(sub);
-  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -ExecuteDoneBh" << std::endl;
+  // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -ExecuteDoneBh" << std::endl;
 };
 
 // Called from Subprocess handler thread.
@@ -172,9 +173,16 @@ void SubprocessStartThread(struct Subprocess * const sub, SubprocessWrapper * sw
   Subprocess_SetCallback(sub, ExecuteDone, sw);
 
   if (!Subprocess_Start(sub)) {
+    std::string error_s;
+    while(Subprocess_HasError(sub)) {
+      SubprocessErrorEntry err(Subprocess_PopError(sub));
+      error_s += "ErrorID: " + boost::lexical_cast<std::string>(err.error_id) +
+          ", ErrorCode: " + boost::lexical_cast<std::string>(err.dwLastError) + "\n";
+    }
     Subprocess_Destroy(sub);
-    contester::proto::LocalExecutionResult response;
-    sw->rpc_->Return(&response);
+    // contester::proto::LocalExecutionResult response;
+    // sw->rpc_->Return(&response);
+    sw->rpc_->ReturnError(error_s);
     delete sw;
   } else {
     sw->rpc_->SetCancelCallback(boost::bind(TerminateExecution, sub));
@@ -182,7 +190,7 @@ void SubprocessStartThread(struct Subprocess * const sub, SubprocessWrapper * sw
 };
 
 void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
-  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +LocalExecute" << std::endl;
+  // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +LocalExecute" << std::endl;
 
   contester::proto::LocalExecutionParameters request;
   request.ParseFromString(rpc->GetRequestMessage());
@@ -192,7 +200,7 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
 
   boost::thread(SubprocessStartThread, sub, sw);
 
-  std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -LocalExecute" << std::endl;
+  // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -LocalExecute" << std::endl;
 };
 
 void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {
