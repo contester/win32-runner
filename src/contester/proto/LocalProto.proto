@@ -67,3 +67,22 @@ message OwnerInfo {
   optional uint32 uid = 1;
   repeated string pathname = 2;
 };
+
+message BinaryTypeRequest {
+  optional string pathname = 1;
+};
+
+message BinaryTypeResponse {
+  enum Win32BinaryType {
+    SCS_32BIT_BINARY = 0;
+    SCS_DOS_BINARY = 1;
+    SCS_WOW_BINARY = 2;
+    SCS_PIF_BINARY = 3;
+    SCS_POSIX_BINARY = 4;
+    SCS_OS216_BINARY = 5;
+    SCS_64BIT_BINARY = 6;
+  };
+
+  optional bool failure = 1;
+  optional Win32BinaryType result = 2;
+};

@@ -39,6 +39,13 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* OwnerInfo_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   OwnerInfo_reflection_ = NULL;
+const ::google::protobuf::Descriptor* BinaryTypeRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  BinaryTypeRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* BinaryTypeResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  BinaryTypeResponse_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* BinaryTypeResponse_Win32BinaryType_descriptor_ = NULL;
 
 }  // namespace
 
@@ -185,6 +192,38 @@ void protobuf_AssignDesc_contester_2fproto_2fLocalProto_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OwnerInfo));
+  BinaryTypeRequest_descriptor_ = file->message_type(6);
+  static const int BinaryTypeRequest_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeRequest, pathname_),
+  };
+  BinaryTypeRequest_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      BinaryTypeRequest_descriptor_,
+      BinaryTypeRequest::default_instance_,
+      BinaryTypeRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeRequest, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(BinaryTypeRequest));
+  BinaryTypeResponse_descriptor_ = file->message_type(7);
+  static const int BinaryTypeResponse_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeResponse, failure_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeResponse, result_),
+  };
+  BinaryTypeResponse_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      BinaryTypeResponse_descriptor_,
+      BinaryTypeResponse::default_instance_,
+      BinaryTypeResponse_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeResponse, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BinaryTypeResponse, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(BinaryTypeResponse));
+  BinaryTypeResponse_Win32BinaryType_descriptor_ = BinaryTypeResponse_descriptor_->enum_type(0);
 }
 
 namespace {
@@ -211,6 +250,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
     LocalExecution_descriptor_, &LocalExecution::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     OwnerInfo_descriptor_, &OwnerInfo::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    BinaryTypeRequest_descriptor_, &BinaryTypeRequest::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    BinaryTypeResponse_descriptor_, &BinaryTypeResponse::default_instance());
 }
 
 }  // namespace
@@ -230,6 +273,10 @@ void protobuf_ShutdownFile_contester_2fproto_2fLocalProto_2eproto() {
   delete LocalExecution_reflection_;
   delete OwnerInfo::default_instance_;
   delete OwnerInfo_reflection_;
+  delete BinaryTypeRequest::default_instance_;
+  delete BinaryTypeRequest_reflection_;
+  delete BinaryTypeResponse::default_instance_;
+  delete BinaryTypeResponse_reflection_;
 }
 
 void protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto() {
@@ -276,7 +323,15 @@ void protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto() {
     "\nparameters\030\001 \002(\0132).contester.proto.Loca"
     "lExecutionParameters\0225\n\006result\030\002 \001(\0132%.c"
     "ontester.proto.LocalExecutionResult\"*\n\tO"
-    "wnerInfo\022\013\n\003uid\030\001 \001(\r\022\020\n\010pathname\030\002 \003(\t", 1439);
+    "wnerInfo\022\013\n\003uid\030\001 \001(\r\022\020\n\010pathname\030\002 \003(\t\""
+    "%\n\021BinaryTypeRequest\022\020\n\010pathname\030\001 \001(\t\"\222"
+    "\002\n\022BinaryTypeResponse\022\017\n\007failure\030\001 \001(\010\022C"
+    "\n\006result\030\002 \001(\01623.contester.proto.BinaryT"
+    "ypeResponse.Win32BinaryType\"\245\001\n\017Win32Bin"
+    "aryType\022\024\n\020SCS_32BIT_BINARY\020\000\022\022\n\016SCS_DOS"
+    "_BINARY\020\001\022\022\n\016SCS_WOW_BINARY\020\002\022\022\n\016SCS_PIF"
+    "_BINARY\020\003\022\024\n\020SCS_POSIX_BINARY\020\004\022\024\n\020SCS_O"
+    "S216_BINARY\020\005\022\024\n\020SCS_64BIT_BINARY\020\006", 1755);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "contester/proto/LocalProto.proto", &protobuf_RegisterTypes);
   LocalEnvironment::default_instance_ = new LocalEnvironment();
@@ -286,6 +341,8 @@ void protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto() {
   LocalExecutionResult::default_instance_ = new LocalExecutionResult();
   LocalExecution::default_instance_ = new LocalExecution();
   OwnerInfo::default_instance_ = new OwnerInfo();
+  BinaryTypeRequest::default_instance_ = new BinaryTypeRequest();
+  BinaryTypeResponse::default_instance_ = new BinaryTypeResponse();
   LocalEnvironment::default_instance_->InitAsDefaultInstance();
   LocalEnvironment_Variable::default_instance_->InitAsDefaultInstance();
   LoginInformation::default_instance_->InitAsDefaultInstance();
@@ -293,6 +350,8 @@ void protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto() {
   LocalExecutionResult::default_instance_->InitAsDefaultInstance();
   LocalExecution::default_instance_->InitAsDefaultInstance();
   OwnerInfo::default_instance_->InitAsDefaultInstance();
+  BinaryTypeRequest::default_instance_->InitAsDefaultInstance();
+  BinaryTypeResponse::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_contester_2fproto_2fLocalProto_2eproto);
 }
 
@@ -3207,6 +3266,512 @@ void OwnerInfo::Swap(OwnerInfo* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = OwnerInfo_descriptor_;
   metadata.reflection = OwnerInfo_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int BinaryTypeRequest::kPathnameFieldNumber;
+#endif  // !_MSC_VER
+
+BinaryTypeRequest::BinaryTypeRequest()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void BinaryTypeRequest::InitAsDefaultInstance() {
+}
+
+BinaryTypeRequest::BinaryTypeRequest(const BinaryTypeRequest& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void BinaryTypeRequest::SharedCtor() {
+  _cached_size_ = 0;
+  pathname_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+BinaryTypeRequest::~BinaryTypeRequest() {
+  SharedDtor();
+}
+
+void BinaryTypeRequest::SharedDtor() {
+  if (pathname_ != &::google::protobuf::internal::kEmptyString) {
+    delete pathname_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void BinaryTypeRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* BinaryTypeRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BinaryTypeRequest_descriptor_;
+}
+
+const BinaryTypeRequest& BinaryTypeRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto();  return *default_instance_;
+}
+
+BinaryTypeRequest* BinaryTypeRequest::default_instance_ = NULL;
+
+BinaryTypeRequest* BinaryTypeRequest::New() const {
+  return new BinaryTypeRequest;
+}
+
+void BinaryTypeRequest::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (has_pathname()) {
+      if (pathname_ != &::google::protobuf::internal::kEmptyString) {
+        pathname_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool BinaryTypeRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string pathname = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_pathname()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->pathname().data(), this->pathname().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void BinaryTypeRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional string pathname = 1;
+  if (has_pathname()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pathname().data(), this->pathname().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->pathname(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* BinaryTypeRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional string pathname = 1;
+  if (has_pathname()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pathname().data(), this->pathname().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->pathname(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int BinaryTypeRequest::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional string pathname = 1;
+    if (has_pathname()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->pathname());
+    }
+    
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void BinaryTypeRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const BinaryTypeRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const BinaryTypeRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void BinaryTypeRequest::MergeFrom(const BinaryTypeRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_pathname()) {
+      set_pathname(from.pathname());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void BinaryTypeRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void BinaryTypeRequest::CopyFrom(const BinaryTypeRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BinaryTypeRequest::IsInitialized() const {
+  
+  return true;
+}
+
+void BinaryTypeRequest::Swap(BinaryTypeRequest* other) {
+  if (other != this) {
+    std::swap(pathname_, other->pathname_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata BinaryTypeRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = BinaryTypeRequest_descriptor_;
+  metadata.reflection = BinaryTypeRequest_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+const ::google::protobuf::EnumDescriptor* BinaryTypeResponse_Win32BinaryType_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BinaryTypeResponse_Win32BinaryType_descriptor_;
+}
+bool BinaryTypeResponse_Win32BinaryType_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#ifndef _MSC_VER
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_32BIT_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_DOS_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_WOW_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_PIF_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_POSIX_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_OS216_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::SCS_64BIT_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::Win32BinaryType_MIN;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::Win32BinaryType_MAX;
+const int BinaryTypeResponse::Win32BinaryType_ARRAYSIZE;
+#endif  // _MSC_VER
+#ifndef _MSC_VER
+const int BinaryTypeResponse::kFailureFieldNumber;
+const int BinaryTypeResponse::kResultFieldNumber;
+#endif  // !_MSC_VER
+
+BinaryTypeResponse::BinaryTypeResponse()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void BinaryTypeResponse::InitAsDefaultInstance() {
+}
+
+BinaryTypeResponse::BinaryTypeResponse(const BinaryTypeResponse& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void BinaryTypeResponse::SharedCtor() {
+  _cached_size_ = 0;
+  failure_ = false;
+  result_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+BinaryTypeResponse::~BinaryTypeResponse() {
+  SharedDtor();
+}
+
+void BinaryTypeResponse::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void BinaryTypeResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* BinaryTypeResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BinaryTypeResponse_descriptor_;
+}
+
+const BinaryTypeResponse& BinaryTypeResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto();  return *default_instance_;
+}
+
+BinaryTypeResponse* BinaryTypeResponse::default_instance_ = NULL;
+
+BinaryTypeResponse* BinaryTypeResponse::New() const {
+  return new BinaryTypeResponse;
+}
+
+void BinaryTypeResponse::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    failure_ = false;
+    result_ = 0;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool BinaryTypeResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional bool failure = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &failure_)));
+          set_has_failure();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_result;
+        break;
+      }
+      
+      // optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::contester::proto::BinaryTypeResponse_Win32BinaryType_IsValid(value)) {
+            set_result(static_cast< ::contester::proto::BinaryTypeResponse_Win32BinaryType >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(2, value);
+          }
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void BinaryTypeResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional bool failure = 1;
+  if (has_failure()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->failure(), output);
+  }
+  
+  // optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->result(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* BinaryTypeResponse::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional bool failure = 1;
+  if (has_failure()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->failure(), target);
+  }
+  
+  // optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      2, this->result(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int BinaryTypeResponse::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional bool failure = 1;
+    if (has_failure()) {
+      total_size += 1 + 1;
+    }
+    
+    // optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->result());
+    }
+    
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void BinaryTypeResponse::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const BinaryTypeResponse* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const BinaryTypeResponse*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void BinaryTypeResponse::MergeFrom(const BinaryTypeResponse& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_failure()) {
+      set_failure(from.failure());
+    }
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void BinaryTypeResponse::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void BinaryTypeResponse::CopyFrom(const BinaryTypeResponse& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BinaryTypeResponse::IsInitialized() const {
+  
+  return true;
+}
+
+void BinaryTypeResponse::Swap(BinaryTypeResponse* other) {
+  if (other != this) {
+    std::swap(failure_, other->failure_);
+    std::swap(result_, other->result_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata BinaryTypeResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = BinaryTypeResponse_descriptor_;
+  metadata.reflection = BinaryTypeResponse_reflection_;
   return metadata;
 }
 

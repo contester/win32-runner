@@ -229,6 +229,40 @@ void PopulateLocalEnvironment(proto::LocalEnvironment* const environment) {
   FreeEnvironmentStringsW(env);
 };
 
+void GetBinaryTypeHandler(shared_ptr<Rpc> rpc) {
+  proto::BinaryTypeRequest request;
+  request.ParseFromString(rpc->GetRequestMessage());
+
+  proto::BinaryTypeResponse result;
+
+  DWORD dwType = 0;
+  const char * const cValue = request.pathname().c_str();
+  const int Length = request.pathname().size();
+  const size_t size = MultiByteToWideChar(CP_UTF8, 0, cValue, Length, NULL, 0);
+  WCHAR * const wBuf = static_cast<WCHAR*>(malloc((size + 1) * sizeof(WCHAR)));
+
+  if (!wBuf) {
+    result.set_failure(true);
+    rpc->Return(&result);
+    return;
+  }
+
+  const size_t resultLen = MultiByteToWideChar(CP_UTF8, 0, cValue, Length, wBuf, size);
+  wBuf[resultLen] = 0;
+
+  const BOOL success = GetBinaryTypeW(wBuf, &dwType);
+
+  free(wBuf);
+
+  if (success) {
+    result.set_result(static_cast<proto::BinaryTypeResponse_Win32BinaryType>(dwType));
+  } else {
+    result.set_failure(true);
+  }
+
+  rpc->Return(&result);
+};
+
 };
 
 using boost::asio::ip::tcp;
@@ -248,6 +282,7 @@ int main(int argc, char **argv) {
     contester::PopulateLocalEnvironment(&env);
     s->AddMethod("LocalExecute", boost::bind(contester::LocalExecute, &env, _1));
     s->AddMethod("GetLocalEnvironment", boost::bind(contester::GetLocalEnvironment, &env, _1));
+    s->AddMethod("GetBinaryType", boost::bind(contester::GetBinaryTypeHandler, _1));
     s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
   }

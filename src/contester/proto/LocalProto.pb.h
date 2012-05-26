@@ -42,7 +42,33 @@ class LocalExecutionParameters;
 class LocalExecutionResult;
 class LocalExecution;
 class OwnerInfo;
+class BinaryTypeRequest;
+class BinaryTypeResponse;
 
+enum BinaryTypeResponse_Win32BinaryType {
+  BinaryTypeResponse_Win32BinaryType_SCS_32BIT_BINARY = 0,
+  BinaryTypeResponse_Win32BinaryType_SCS_DOS_BINARY = 1,
+  BinaryTypeResponse_Win32BinaryType_SCS_WOW_BINARY = 2,
+  BinaryTypeResponse_Win32BinaryType_SCS_PIF_BINARY = 3,
+  BinaryTypeResponse_Win32BinaryType_SCS_POSIX_BINARY = 4,
+  BinaryTypeResponse_Win32BinaryType_SCS_OS216_BINARY = 5,
+  BinaryTypeResponse_Win32BinaryType_SCS_64BIT_BINARY = 6
+};
+bool BinaryTypeResponse_Win32BinaryType_IsValid(int value);
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse_Win32BinaryType_Win32BinaryType_MIN = BinaryTypeResponse_Win32BinaryType_SCS_32BIT_BINARY;
+const BinaryTypeResponse_Win32BinaryType BinaryTypeResponse_Win32BinaryType_Win32BinaryType_MAX = BinaryTypeResponse_Win32BinaryType_SCS_64BIT_BINARY;
+const int BinaryTypeResponse_Win32BinaryType_Win32BinaryType_ARRAYSIZE = BinaryTypeResponse_Win32BinaryType_Win32BinaryType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* BinaryTypeResponse_Win32BinaryType_descriptor();
+inline const ::std::string& BinaryTypeResponse_Win32BinaryType_Name(BinaryTypeResponse_Win32BinaryType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    BinaryTypeResponse_Win32BinaryType_descriptor(), value);
+}
+inline bool BinaryTypeResponse_Win32BinaryType_Parse(
+    const ::std::string& name, BinaryTypeResponse_Win32BinaryType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<BinaryTypeResponse_Win32BinaryType>(
+    BinaryTypeResponse_Win32BinaryType_descriptor(), name, value);
+}
 // ===================================================================
 
 class LocalEnvironment_Variable : public ::google::protobuf::Message {
@@ -988,6 +1014,213 @@ class OwnerInfo : public ::google::protobuf::Message {
   
   void InitAsDefaultInstance();
   static OwnerInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class BinaryTypeRequest : public ::google::protobuf::Message {
+ public:
+  BinaryTypeRequest();
+  virtual ~BinaryTypeRequest();
+  
+  BinaryTypeRequest(const BinaryTypeRequest& from);
+  
+  inline BinaryTypeRequest& operator=(const BinaryTypeRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BinaryTypeRequest& default_instance();
+  
+  void Swap(BinaryTypeRequest* other);
+  
+  // implements Message ----------------------------------------------
+  
+  BinaryTypeRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BinaryTypeRequest& from);
+  void MergeFrom(const BinaryTypeRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // optional string pathname = 1;
+  inline bool has_pathname() const;
+  inline void clear_pathname();
+  static const int kPathnameFieldNumber = 1;
+  inline const ::std::string& pathname() const;
+  inline void set_pathname(const ::std::string& value);
+  inline void set_pathname(const char* value);
+  inline void set_pathname(const char* value, size_t size);
+  inline ::std::string* mutable_pathname();
+  inline ::std::string* release_pathname();
+  
+  // @@protoc_insertion_point(class_scope:contester.proto.BinaryTypeRequest)
+ private:
+  inline void set_has_pathname();
+  inline void clear_has_pathname();
+  
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  
+  ::std::string* pathname_;
+  
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  
+  friend void  protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto();
+  friend void protobuf_AssignDesc_contester_2fproto_2fLocalProto_2eproto();
+  friend void protobuf_ShutdownFile_contester_2fproto_2fLocalProto_2eproto();
+  
+  void InitAsDefaultInstance();
+  static BinaryTypeRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class BinaryTypeResponse : public ::google::protobuf::Message {
+ public:
+  BinaryTypeResponse();
+  virtual ~BinaryTypeResponse();
+  
+  BinaryTypeResponse(const BinaryTypeResponse& from);
+  
+  inline BinaryTypeResponse& operator=(const BinaryTypeResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BinaryTypeResponse& default_instance();
+  
+  void Swap(BinaryTypeResponse* other);
+  
+  // implements Message ----------------------------------------------
+  
+  BinaryTypeResponse* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BinaryTypeResponse& from);
+  void MergeFrom(const BinaryTypeResponse& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  typedef BinaryTypeResponse_Win32BinaryType Win32BinaryType;
+  static const Win32BinaryType SCS_32BIT_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_32BIT_BINARY;
+  static const Win32BinaryType SCS_DOS_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_DOS_BINARY;
+  static const Win32BinaryType SCS_WOW_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_WOW_BINARY;
+  static const Win32BinaryType SCS_PIF_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_PIF_BINARY;
+  static const Win32BinaryType SCS_POSIX_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_POSIX_BINARY;
+  static const Win32BinaryType SCS_OS216_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_OS216_BINARY;
+  static const Win32BinaryType SCS_64BIT_BINARY = BinaryTypeResponse_Win32BinaryType_SCS_64BIT_BINARY;
+  static inline bool Win32BinaryType_IsValid(int value) {
+    return BinaryTypeResponse_Win32BinaryType_IsValid(value);
+  }
+  static const Win32BinaryType Win32BinaryType_MIN =
+    BinaryTypeResponse_Win32BinaryType_Win32BinaryType_MIN;
+  static const Win32BinaryType Win32BinaryType_MAX =
+    BinaryTypeResponse_Win32BinaryType_Win32BinaryType_MAX;
+  static const int Win32BinaryType_ARRAYSIZE =
+    BinaryTypeResponse_Win32BinaryType_Win32BinaryType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Win32BinaryType_descriptor() {
+    return BinaryTypeResponse_Win32BinaryType_descriptor();
+  }
+  static inline const ::std::string& Win32BinaryType_Name(Win32BinaryType value) {
+    return BinaryTypeResponse_Win32BinaryType_Name(value);
+  }
+  static inline bool Win32BinaryType_Parse(const ::std::string& name,
+      Win32BinaryType* value) {
+    return BinaryTypeResponse_Win32BinaryType_Parse(name, value);
+  }
+  
+  // accessors -------------------------------------------------------
+  
+  // optional bool failure = 1;
+  inline bool has_failure() const;
+  inline void clear_failure();
+  static const int kFailureFieldNumber = 1;
+  inline bool failure() const;
+  inline void set_failure(bool value);
+  
+  // optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::contester::proto::BinaryTypeResponse_Win32BinaryType result() const;
+  inline void set_result(::contester::proto::BinaryTypeResponse_Win32BinaryType value);
+  
+  // @@protoc_insertion_point(class_scope:contester.proto.BinaryTypeResponse)
+ private:
+  inline void set_has_failure();
+  inline void clear_has_failure();
+  inline void set_has_result();
+  inline void clear_has_result();
+  
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  
+  bool failure_;
+  int result_;
+  
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  
+  friend void  protobuf_AddDesc_contester_2fproto_2fLocalProto_2eproto();
+  friend void protobuf_AssignDesc_contester_2fproto_2fLocalProto_2eproto();
+  friend void protobuf_ShutdownFile_contester_2fproto_2fLocalProto_2eproto();
+  
+  void InitAsDefaultInstance();
+  static BinaryTypeResponse* default_instance_;
 };
 // ===================================================================
 
@@ -2268,6 +2501,117 @@ OwnerInfo::mutable_pathname() {
   return &pathname_;
 }
 
+// -------------------------------------------------------------------
+
+// BinaryTypeRequest
+
+// optional string pathname = 1;
+inline bool BinaryTypeRequest::has_pathname() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void BinaryTypeRequest::set_has_pathname() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void BinaryTypeRequest::clear_has_pathname() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void BinaryTypeRequest::clear_pathname() {
+  if (pathname_ != &::google::protobuf::internal::kEmptyString) {
+    pathname_->clear();
+  }
+  clear_has_pathname();
+}
+inline const ::std::string& BinaryTypeRequest::pathname() const {
+  return *pathname_;
+}
+inline void BinaryTypeRequest::set_pathname(const ::std::string& value) {
+  set_has_pathname();
+  if (pathname_ == &::google::protobuf::internal::kEmptyString) {
+    pathname_ = new ::std::string;
+  }
+  pathname_->assign(value);
+}
+inline void BinaryTypeRequest::set_pathname(const char* value) {
+  set_has_pathname();
+  if (pathname_ == &::google::protobuf::internal::kEmptyString) {
+    pathname_ = new ::std::string;
+  }
+  pathname_->assign(value);
+}
+inline void BinaryTypeRequest::set_pathname(const char* value, size_t size) {
+  set_has_pathname();
+  if (pathname_ == &::google::protobuf::internal::kEmptyString) {
+    pathname_ = new ::std::string;
+  }
+  pathname_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* BinaryTypeRequest::mutable_pathname() {
+  set_has_pathname();
+  if (pathname_ == &::google::protobuf::internal::kEmptyString) {
+    pathname_ = new ::std::string;
+  }
+  return pathname_;
+}
+inline ::std::string* BinaryTypeRequest::release_pathname() {
+  clear_has_pathname();
+  if (pathname_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = pathname_;
+    pathname_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+
+// -------------------------------------------------------------------
+
+// BinaryTypeResponse
+
+// optional bool failure = 1;
+inline bool BinaryTypeResponse::has_failure() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void BinaryTypeResponse::set_has_failure() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void BinaryTypeResponse::clear_has_failure() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void BinaryTypeResponse::clear_failure() {
+  failure_ = false;
+  clear_has_failure();
+}
+inline bool BinaryTypeResponse::failure() const {
+  return failure_;
+}
+inline void BinaryTypeResponse::set_failure(bool value) {
+  set_has_failure();
+  failure_ = value;
+}
+
+// optional .contester.proto.BinaryTypeResponse.Win32BinaryType result = 2;
+inline bool BinaryTypeResponse::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void BinaryTypeResponse::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void BinaryTypeResponse::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void BinaryTypeResponse::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::contester::proto::BinaryTypeResponse_Win32BinaryType BinaryTypeResponse::result() const {
+  return static_cast< ::contester::proto::BinaryTypeResponse_Win32BinaryType >(result_);
+}
+inline void BinaryTypeResponse::set_result(::contester::proto::BinaryTypeResponse_Win32BinaryType value) {
+  GOOGLE_DCHECK(::contester::proto::BinaryTypeResponse_Win32BinaryType_IsValid(value));
+  set_has_result();
+  result_ = value;
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -2278,6 +2622,10 @@ OwnerInfo::mutable_pathname() {
 namespace google {
 namespace protobuf {
 
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::contester::proto::BinaryTypeResponse_Win32BinaryType>() {
+  return ::contester::proto::BinaryTypeResponse_Win32BinaryType_descriptor();
+}
 
 }  // namespace google
 }  // namespace protobuf
