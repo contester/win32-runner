@@ -69,7 +69,7 @@ void ExecuteDoneBh(struct Subprocess* const sub, void* wrapper) {
   if (pError && pError->Size)
     response.mutable_std_err()->set_data(pError->cBuffer, pError->Size);
 
-  sw->rpc_->Return(&response);
+  sw->rpc_->Return(response);
 
   Subprocess_Destroy(sub);
   // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -ExecuteDoneBh" << std::endl;
@@ -89,13 +89,13 @@ void TerminateExecution(struct Subprocess * const sub) {
   std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -TerminateExecution" << std::endl;
 }
 
-void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnvironment * const local_environment, const proto::LocalEnvironment* const environment) {
+void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnvironment& local_environment, const proto::LocalEnvironment* const environment) {
   std::map< std::string, std::string > envmap;
 
   if (!environment->empty()) {
-    for (int i = 0; i < local_environment->variable_size(); i++) {
-      if (!local_environment->variable(i).name().empty())
-        envmap[local_environment->variable(i).name()] = local_environment->variable(i).value();
+    for (int i = 0; i < local_environment.variable_size(); i++) {
+      if (!local_environment.variable(i).name().empty())
+        envmap[local_environment.variable(i).name()] = local_environment.variable(i).value();
     }
   }
 
@@ -115,7 +115,7 @@ void Subprocess_FillEnv(struct Subprocess * const sub, const proto::LocalEnviron
   Subprocess_SetProtoString(sub, RUNLIB_ENVIRONMENT, strenv);
 };
 
-void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* const params, const proto::LocalEnvironment* const local_environment) {
+void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionParameters* const params, const proto::LocalEnvironment& local_environment) {
   if (params->has_application_name())
     Subprocess_SetProtoString(sub, RUNLIB_APPLICATION_NAME, params->application_name());
   if (params->has_command_line())
@@ -162,7 +162,7 @@ void Subprocess_FillProto(struct Subprocess * const sub, proto::LocalExecutionPa
     Subprocess_SetBufferOutputRedirect(sub, Error);
 };
 
-struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* params, const proto::LocalEnvironment* const local_environment) {
+struct Subprocess * Subprocess_CreateAndFill(proto::LocalExecutionParameters* params, const proto::LocalEnvironment& local_environment) {
   struct Subprocess * const result = Subprocess_Create();
 
   Subprocess_FillProto(result, params, local_environment);
@@ -189,7 +189,7 @@ void SubprocessStartThread(struct Subprocess * const sub, SubprocessWrapper * sw
   } 
 };
 
-void LocalExecute(const proto::LocalEnvironment* const local_environment, shared_ptr<Rpc> rpc) {
+void LocalExecute(const proto::LocalEnvironment& local_environment, shared_ptr<Rpc> rpc) {
   // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " +LocalExecute" << std::endl;
 
   contester::proto::LocalExecutionParameters request;
@@ -203,11 +203,11 @@ void LocalExecute(const proto::LocalEnvironment* const local_environment, shared
   // std::cout << boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::universal_time()) << " -LocalExecute" << std::endl;
 };
 
-void GetLocalEnvironment(proto::LocalEnvironment* const environment, shared_ptr<Rpc> rpc) {
+void GetLocalEnvironment(const proto::LocalEnvironment& environment, shared_ptr<Rpc> rpc) {
   rpc->Return(environment);
 };
 
-void PopulateLocalEnvironment(proto::LocalEnvironment* const environment) {
+void PopulateLocalEnvironment(proto::LocalEnvironment& environment) {
   WCHAR* const env = GetEnvironmentStringsW();
   WCHAR* envp = env;
 
@@ -219,7 +219,7 @@ void PopulateLocalEnvironment(proto::LocalEnvironment* const environment) {
     delete buf;
     size_t split_pos = str_var.find_first_of("=");
     if (split_pos != str_var.npos) {
-      proto::LocalEnvironment::Variable* const var = environment->add_variable();
+      proto::LocalEnvironment::Variable* const var = environment.add_variable();
       var->set_name(str_var.substr(0, split_pos));
       var->set_value(str_var.substr(split_pos + 1));
     }
@@ -243,7 +243,7 @@ void GetBinaryTypeHandler(shared_ptr<Rpc> rpc) {
 
   if (!wBuf) {
     result.set_failure(true);
-    rpc->Return(&result);
+    rpc->Return(result);
     return;
   }
 
@@ -260,7 +260,7 @@ void GetBinaryTypeHandler(shared_ptr<Rpc> rpc) {
     result.set_failure(true);
   }
 
-  rpc->Return(&result);
+  rpc->Return(result);
 };
 
 };
@@ -279,9 +279,9 @@ int main(int argc, char **argv) {
     boost::asio::io_service io_service;
     shared_ptr<contester::Server> s(contester::CreateTCPServer(io_service));
     contester::proto::LocalEnvironment env;
-    contester::PopulateLocalEnvironment(&env);
-    s->AddMethod("LocalExecute", boost::bind(contester::LocalExecute, &env, _1));
-    s->AddMethod("GetLocalEnvironment", boost::bind(contester::GetLocalEnvironment, &env, _1));
+    contester::PopulateLocalEnvironment(env);
+    s->AddMethod("LocalExecute", boost::bind(contester::LocalExecute, env, _1));
+    s->AddMethod("GetLocalEnvironment", boost::bind(contester::GetLocalEnvironment, env, _1));
     s->AddMethod("GetBinaryType", boost::bind(contester::GetBinaryTypeHandler, _1));
     s->Listen(tcp::endpoint(boost::asio::ip::address_v4::loopback(), std::atoi(argv[1])));
     io_service.run();
