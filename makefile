@@ -2,44 +2,37 @@
 BOOST := c:/a/Boost
 PROTOBUF := c:/a/protobuf
 RUNLIB32 := c:/a/runlib32
+RPCLIB := ../boost-rpclib
 SOURCES := src/w32invoke.c src/pipes.c src/winmisc.c src/inject.c
 HEADERS := src/pipes.h src/winmisc.h src/inject.h
 EXT_HEADERS := include/w32invoke.h include/win32-gcc.h include/msstdint.h
 CXX := g++.exe
-CPPFLAGS := -pipe -Wall -g -Os -I$(BOOST)/include -I$(PROTOBUF)/include -I$(RUNLIB32)/include -D_WIN32_WINNT=0x0501 -DBOOST_THREAD_USE_LIB -Isrc/
-LDFLAGS := -pipe -static-libgcc -static-libstdc++ -Wl,--allow-multiple-definition -Wall -g -Os -lws2_32 -L$(BOOST)/lib -Wl,-Bstatic -lboost_date_time-mt -lboost_system-mt -lboost_thread-mt -lboost_chrono-mt -L$(PROTOBUF)/lib -lprotobuf -L$(RUNLIB32)/src -lrunlib32 -Wl,-Bdynamic -ladvapi32 -lpsapi -luserenv -lmswsock
+CPPFLAGS := -pipe -Wall -g -Os -I$(BOOST)/include -I$(PROTOBUF)/include -I$(RUNLIB32)/include -I$(RPCLIB)/src -D_WIN32_WINNT=0x0501 -DBOOST_THREAD_USE_LIB -Isrc/
+LDFLAGS := -pipe -static-libgcc -static-libstdc++ -Wl,--allow-multiple-definition -Wall -g -Os -lws2_32 -L$(BOOST)/lib -Wl,-Bstatic -lboost_date_time-mt -lboost_system-mt -lboost_thread-mt -lboost_chrono-mt -L$(PROTOBUF)/lib -lprotobuf -L$(RUNLIB32)/src -lrunlib32 -L$(RPCLIB)/src -lrpc -Wl,-Bdynamic -ladvapi32 -lpsapi -luserenv -lmswsock
 
+libproto_sources := \
+	src/contester/proto/LocalProto.pb.cc \
+	src/contester/proto/BlobProto.pb.cc \
+	src/contester/proto/ExecutionProto.pb.cc
 
-build/%.o: src/%.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
+sources := $(libproto.sources) src/main.cc
 
-all: build/main.exe
+%.d: %.cc
+	$(CXX) -MM -MF $@ -MT $(@:.d=.o) $(CPPFLAGS) $< 
 
-build:
-	mkdir build
+%.o: %.cc
+	$(CXX) $(CPPFLAGS) -c -o $@ $<
 
-build/rpc.pb.o: src/rpc.pb.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
+%.a: %.o
+	$(AR) r $@ $*.o
 
-build/rpc_object.o: src/rpc_object.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
+include $(sources:.cc=.d)
 
-build/rpc_object_session.o: src/rpc_object_session.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
+src/libproto.a: $(libproto_sources:.cc=.o)
 
-build/rpc_session.o: src/rpc_session.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
-
-build/rpc_server.o: src/rpc_server.cc
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
-                              
-build/librpc.a: build/rpc.pb.o build/rpc_object.o build/rpc_object_session.o build/rpc_session.o build/rpc_server.o
-	ar.exe rcs $@ $^
-
-build/main.o: src/main.cc 
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
-
-build/main.exe: build/main.o build/librpc.a build/contester/proto/LocalProto.pb.o build/contester/proto/BlobProto.pb.o build/contester/proto/ExecutionProto.pb.o
+src/main.exe: src/main.o src/libproto.a
 	$(CXX) -o $@ $^ $(LDFLAGS)
+
+all: src/main.exe
 
 .PHONY: all
